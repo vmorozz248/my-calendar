@@ -15,44 +15,46 @@
     }
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #212529; }
     
+    /* ВИПРАВЛЕНО: Гнучка структура для ПК та Телефону */
     .main-container { 
-        display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box;
+        display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box;
     }
+
+    .calendar-section { flex: 1; min-width: 320px; background: white; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .stats-panel { width: 300px; background: white; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); height: fit-content; }
 
     /* ЖОРСТКИЙ МОБІЛЬНИЙ РЕЖИМ */
     @media (max-width: 900px) {
         .main-container { flex-direction: column; padding: 10px; }
-        .header { flex-direction: column; text-align: center; height: auto !important; }
-        .header-controls { width: 100%; justify-content: center; margin-top: 10px; }
-        .day { height: 85px !important; padding: 2px !important; }
-        .date-num { font-size: 11px !important; }
-        .ev-badge { font-size: 8px !important; padding: 1px 2px !important; }
-        .stats-panel { width: 100% !important; order: 2; }
-        .calendar-section { order: 1; width: 100%; }
+        .stats-panel { width: 100%; box-sizing: border-box; }
+        .header { flex-direction: column; height: auto !important; padding: 15px 10px; }
+        .header-controls { width: 100%; justify-content: space-around; margin-top: 10px; gap: 5px; }
+        .header-controls button, .header-controls input { font-size: 11px; padding: 6px 8px; }
+        .day { height: 75px !important; }
+        .week-day { font-size: 10px; padding: 5px 2px; }
     }
 
-    .header { width: 100%; background: var(--header-gradient); padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .header { width: 100%; background: var(--header-gradient); padding: 12px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; }
+    .header-controls { display: flex; gap: 8px; align-items: center; }
     
-    .calendar-section { flex: 1; background: white; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .month-nav { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; }
+    .month-nav { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 10px; }
     .month-title { font-size: 18px; font-weight: bold; min-width: 140px; text-align: center; }
     
     .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
     .week-day { background: #f1f3f5; padding: 8px; text-align: center; font-weight: bold; font-size: 11px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-    .day { height: 110px; padding: 5px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; }
+    .day { height: 100px; padding: 4px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; }
     .is-weekend { background: #fafafa; } .is-holiday { background: #fff9db !important; }
     
-    .ev-badge { font-size: 9px; padding: 2px 4px; border-radius: 3px; margin-top: 2px; color: white; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ev-badge { font-size: 8px; padding: 2px; border-radius: 3px; margin-top: 2px; color: white; line-height: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
+    
     .cat-марафон { background: var(--clr-марафон); } .cat-акція { background: var(--clr-акція); } .cat-фотозвіт_до_свята { background: var(--clr-фотозвіт_до_свята); }
     .cat-профорієнтація { background: var(--clr-профорієнтація); } .cat-фотозвіт_до_дати { background: var(--clr-фотозвіт_до_дати); } .cat-фотозвіт { background: var(--clr-фотозвіт); }
 
-    .stats-panel { width: 300px; background: white; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); height: fit-content; }
     .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
     .stat-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
 
-    #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 1000; width: 90%; max-width: 360px; display: none; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto; }
-    input, textarea, select { width: 100%; margin: 5px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+    #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 1000; width: 92%; max-width: 380px; display: none; border: 1px solid var(--border-color); box-sizing: border-box; }
+    input, textarea, select { width: 100%; margin: 5px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
     .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:999; backdrop-filter: blur(2px); }
 </style>
@@ -61,13 +63,13 @@
 
 <div class="header">
     <div class="header-text">
-        <h2 style="margin:0; font-size:18px;">Кабінет Валерії 🦝</h2>
-        <p style="margin:2px 0 0 0; font-size:11px; opacity:0.8">2025-2026 н.р. • Хмара</p>
+        <h2 style="margin:0; font-size:16px;">Кабінет Валерії 🦝</h2>
+        <p style="margin:2px 0 0 0; font-size:10px; opacity:0.8">2025-2026 н.р. • Хмара</p>
     </div>
     <div class="header-controls">
-        <button onclick="goToday()" style="background:#fff; color:#6c429c; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:12px;">Сьогодні</button>
-        <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="width:100px; padding:8px; border-radius:8px; border:none;">
-        <button onclick="generateReport()" style="background:#fff; color:#6c429c; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:12px;">Звіт</button>
+        <button onclick="goToday()" style="background:#fff; color:#6c429c; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-weight:bold;">Сьогодні</button>
+        <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="width:80px; border:none; border-radius:6px; padding:6px;">
+        <button onclick="generateReport()" style="background:#fff; color:#6c429c; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-weight:bold;">Звіт</button>
     </div>
 </div>
 
@@ -90,8 +92,8 @@
 <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
 <div id="eventForm">
-    <h3 id="selectedDateText" style="margin:0 0 10px 0; color:#6c429c; text-align:center;"></h3>
-    <div style="font-size:12px; margin-bottom:8px; text-align:center;"><input type="checkbox" id="isHoliday" style="width:auto"> Вихідний/Свято</div>
+    <h3 id="selectedDateText" style="margin:0 0 10px 0; color:#6c429c; text-align:center; font-size:18px;"></h3>
+    <div style="font-size:12px; margin-bottom:10px; text-align:center;"><input type="checkbox" id="isHoliday" style="width:auto"> Вихідний/Свято</div>
     <select id="eventCategory">
         <option value="акція">Акція</option><option value="марафон">Марафон</option>
         <option value="фотозвіт_до_свята">Фотозвіт до свята</option><option value="профорієнтація">Профорієнтація</option>
@@ -107,12 +109,6 @@
     <button class="btn-save" onclick="saveEvent()">Зберегти</button>
     <button style="background:none; border:none; color:#c92a2a; width:100%; margin-top:10px; cursor:pointer; font-size:12px;" onclick="deleteEvent()">Видалити</button>
     <button style="background:none; border:none; color:#868e96; width:100%; margin-top:5px; cursor:pointer; font-size:12px;" onclick="closeAll()">Скасувати</button>
-</div>
-
-<div id="reportModal">
-    <h3 style="margin-top:0">Звіт</h3>
-    <textarea id="reportTextarea" style="height:250px; font-family:monospace; font-size:12px; width:100%;" readonly></textarea>
-    <button class="btn-save" style="margin-top:10px;" onclick="closeAll()">Закрити</button>
 </div>
 
 <script type="module">
@@ -177,10 +173,10 @@
         const dw = new Date(currYear, currMonth, i).getDay();
         dayDiv.className = `day ${dw===0 || dw===6 ? 'is-weekend' : ''}`;
         if (events[key] && events[key].isHoliday) dayDiv.classList.add('is-holiday');
-        let html = `<span class="date-num" style="font-weight:bold">${i}</span>`;
+        let html = `<span class="date-num" style="font-size:12px;">${i}</span>`;
         if (events[key]) {
             const ev = events[key];
-            const matches = ev.name?.toLowerCase().includes(query) || ev.cls?.toLowerCase().includes(query);
+            const matches = ev.name?.toLowerCase().includes(query) || ev.cls?.toLowerCase().includes(query) || ev.student?.toLowerCase().includes(query);
             if (matches) {
                 const label = ev.cls ? ev.cls : (ev.student ? ev.student : ev.name);
                 html += `<div class="ev-badge cat-${ev.category}">${label}</div>`;
@@ -214,7 +210,7 @@
 
   window.goToday = function() { let now = new Date(); currMonth = now.getMonth(); currYear = now.getFullYear(); render(); };
   window.changeMonth = function(s) { currMonth += s; if (currMonth < 0) { currMonth = 11; currYear--; } if (currMonth > 11) { currMonth = 0; currYear++; } render(); };
-  window.closeAll = function() { document.getElementById('eventForm').style.display='none'; document.getElementById('reportModal').style.display='none'; document.getElementById('overlay').style.display='none'; };
+  window.closeAll = function() { document.getElementById('eventForm').style.display='none'; document.getElementById('overlay').style.display='none'; };
   render();
 </script>
 </body>
