@@ -21,7 +21,7 @@
     .main-container { display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box; align-items: flex-start; }
 
     .calendar-section { flex: 1; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .stats-panel { width: 300px; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); height: fit-content; }
+    .stats-panel { width: 320px; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); height: fit-content; max-height: 80vh; overflow-y: auto; }
 
     @media (max-width: 900px) {
         .main-container { flex-direction: column; padding: 10px; }
@@ -32,27 +32,21 @@
 
     .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; background: white; }
     .week-day { background: #f1f3f5; padding: 12px; text-align: center; font-weight: bold; font-size: 14px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-    .day { height: 110px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; box-sizing: border-box; }
-    .date-num { font-size: 16px; font-weight: bold; }
-    .ev-badge { font-size: 12px; padding: 4px 6px; border-radius: 4px; margin-top: 6px; color: white; line-height: 1.2; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-    /* ФІКСОВАНИЙ ТА РОЗУМНИЙ ВИГЛЯД ФОРМИ */
-    #eventForm { 
-        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-        background: white; padding: 25px; border-radius: 12px; 
-        box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 2000; 
-        width: 92%; max-width: 400px; display: none; 
-        border: 1px solid var(--border-color); box-sizing: border-box;
-        max-height: 85vh; /* Ліміт висоти */
-        overflow-y: auto; /* Прокрутка всередині */
-        resize: none; /* ЗАБОРОНА розтягування мишкою */
-    }
-
-    input, select { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
     
-    /* Заборона розтягувати поле приміток вручну */
-    textarea { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; resize: none; }
+    .day { height: 110px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; box-sizing: border-box; transition: 0.3s; }
+    .day.highlighted { transform: scale(0.95); box-shadow: inset 0 0 15px rgba(108, 66, 156, 0.4); border: 2px solid #6c429c; z-index: 5; }
 
+    .date-num { font-size: 16px; font-weight: bold; }
+    .ev-badge { font-size: 11px; padding: 3px 5px; border-radius: 4px; margin-top: 4px; color: white; line-height: 1.2; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Стиль для кнопок у статистиці */
+    .stat-item { padding: 8px; border-radius: 6px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; margin-bottom: 5px; }
+    .stat-item:hover { background: #f3e8ff; border-color: #6c429c; }
+    .stat-item.active { background: #6c429c !important; color: white !important; font-weight: bold; }
+    .stat-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+
+    #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 2000; width: 92%; max-width: 400px; display: none; border: 1px solid var(--border-color); box-sizing: border-box; max-height: 85vh; overflow-y: auto; }
+    input, select, textarea { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; resize: none; }
     .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:1500; backdrop-filter: blur(2px); }
     
@@ -68,7 +62,7 @@
 <div class="header">
     <div class="header-text">
         <h2 style="margin:0; font-size:20px;">Кабінет Валерії 🦝</h2>
-        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Фіксована форма</p>
+        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Розумна статистика</p>
     </div>
     <div class="header-controls">
         <button onclick="goToday()" style="background:#fff; color:#6c429c; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:13px;">Сьогодні</button>
@@ -88,7 +82,7 @@
     </div>
 
     <div class="stats-panel">
-        <div style="font-weight:bold; color:#6c429c; margin-bottom:12px; border-bottom:1px solid #eee; padding-bottom:5px;">📊 Статистика</div>
+        <div style="font-weight:bold; color:#6c429c; margin-bottom:12px; border-bottom:1px solid #eee; padding-bottom:5px;">📊 Заходи місяця</div>
         <div id="statsContent"></div>
     </div>
 </div>
@@ -101,7 +95,7 @@
         <option value="фотозвіт_до_свята">Фотозвіт до свята</option><option value="профорієнтація">Профорієнтація</option>
         <option value="фотозвіт_до_дати">Фотозвіт до дати</option><option value="фотозвіт">Фотозвіт</option>
     </select>
-    <input type="text" id="eventName" placeholder="Назва заходу">
+    <input type="text" id="eventName" placeholder="Назва заходу (напр. День Миру)">
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
         <input type="text" id="eventClass" placeholder="Клас">
         <input type="text" id="eventTeacher" placeholder="Вчитель">
@@ -133,6 +127,8 @@
   let currMonth = d.getMonth();
   let currYear = d.getFullYear();
   let events = {};
+  let highlightedEventName = null;
+
   const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
 
   onSnapshot(collection(db, "schoolEvents"), (snapshot) => {
@@ -166,7 +162,7 @@
     let firstDay = new Date(currYear, currMonth, 1).getDay();
     let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
     let start = firstDay === 0 ? 6 : firstDay - 1;
-    let stats = {};
+    let statsData = {};
 
     for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty-day"></div>`;
     for (let i = 1; i <= daysInMo; i++) {
@@ -174,25 +170,59 @@
         const dayDiv = document.createElement('div');
         const dw = new Date(currYear, currMonth, i).getDay();
         dayDiv.className = `day ${dw===0 || dw===6 ? 'is-weekend' : ''}`;
-        if (events[key] && events[key].isHoliday) dayDiv.classList.add('is-holiday');
-        let html = `<span class="date-num">${i}</span>`;
+        
         if (events[key]) {
             const ev = events[key];
-            const matches = ev.name?.toLowerCase().includes(query) || ev.cls?.toLowerCase().includes(query) || ev.student?.toLowerCase().includes(query);
+            if (ev.isHoliday) dayDiv.classList.add('is-holiday');
+            
+            // ПІДСВІЧУВАННЯ ТУТ
+            if (highlightedEventName && ev.name === highlightedEventName) {
+                dayDiv.classList.add('highlighted');
+            }
+
+            const matches = ev.name?.toLowerCase().includes(query) || ev.cls?.toLowerCase().includes(query);
             if (matches) {
                 const label = ev.cls ? ev.cls : (ev.student ? ev.student : ev.name);
-                html += `<div class="ev-badge cat-${ev.category}">${label}</div>`;
-                stats[ev.category] = (stats[ev.category] || 0) + 1;
+                dayDiv.innerHTML = `<span class="date-num">${i}</span><div class="ev-badge cat-${ev.category}">${label}</div>`;
+                
+                // Збираємо дані для статистики
+                if (ev.name) {
+                    if (!statsData[ev.name]) statsData[ev.name] = { count: 0, category: ev.category };
+                    statsData[ev.name].count++;
+                }
+            } else {
+                dayDiv.innerHTML = `<span class="date-num">${i}</span>`;
             }
+        } else {
+            dayDiv.innerHTML = `<span class="date-num">${i}</span>`;
         }
-        dayDiv.innerHTML = html; dayDiv.onclick = () => openForm(i); grid.appendChild(dayDiv);
+        
+        dayDiv.onclick = () => openForm(i);
+        grid.appendChild(dayDiv);
     }
+
+    // Рендеримо статистику як список кнопок
     let h = '';
-    for (let cat in stats) {
-        const label = cat.charAt(0).toUpperCase() + cat.slice(1).replace(/_/g, ' ');
-        h += `<div class="stat-row"><span><span class="stat-dot" style="background:var(--clr-${cat})"></span>${label}</span><b>${stats[cat]}</b></div>`;
+    for (let name in statsData) {
+        const isActive = highlightedEventName === name ? 'active' : '';
+        h += `
+        <div class="stat-item ${isActive}" onclick="toggleHighlight('${name}')">
+            <div class="stat-row">
+                <span><span class="stat-dot" style="background:var(--clr-${statsData[name].category})"></span>${name}</span>
+                <b>${statsData[name].count}</b>
+            </div>
+        </div>`;
     }
-    document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#999">Немає заходів</p>';
+    document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#999">Заходів не знайдено</p>';
+  };
+
+  window.toggleHighlight = function(name) {
+    if (highlightedEventName === name) {
+        highlightedEventName = null; // Вимкнути
+    } else {
+        highlightedEventName = name; // Увімкнути
+    }
+    render();
   };
 
   window.openForm = function(day) {
