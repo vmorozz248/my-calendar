@@ -3,112 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Кабінет Валерії: Навчальний рік</title>
+<title>Кабінет Валерії: Хмарний Календар</title>
 <style>
     :root {
-        /* Приємний ліловий фон сторінки */
         --bg-main: #f3e8ff; 
-        
-        /* Глибокий сірий для меж (чіткий, але не чорний) */
         --border-color: #888; 
-        
-        /* Фірмовий градієнт Валерії (фіолетово-рожевий) */
         --header-gradient: linear-gradient(135deg, #6c429c, #d93d5c);
-        
-        /* Кольори для вихідних (адаптовані під ліловий фон) */
-        --sat-color: #e03131; /* Червоний субота */
-        --sun-color: #7048e8; /* Фіолетовий неділя */
+        --sat-color: #e03131;
+        --sun-color: #7048e8;
     }
-
-    body { 
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-        background: var(--bg-main);
-        display: flex; flex-direction: column; align-items: center; 
-        margin: 0; min-height: 100vh; color: #212529;
-    }
-
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); display: flex; flex-direction: column; align-items: center; margin: 0; min-height: 100vh; color: #212529; }
     .main-container { width: 98vw; max-width: 1200px; padding: 20px; display: grid; grid-template-columns: 1fr 320px; gap: 20px; box-sizing: border-box; }
-    
-    .header { 
-        grid-column: 1 / -1; background: var(--header-gradient); 
-        border-radius: 12px; padding: 20px; color: white; 
-        display: flex; justify-content: space-between; align-items: center; 
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    /* Стиль для імені з єнотиком */
-    .header-user-info {
-        display: flex;
-        align-items: center;
-        gap: 10px; /* Відступ між іменем та єнотиком */
-    }
-    .header-user-info h2 { margin: 0; font-size: 22px; font-weight: 500; }
-    .racoon-icon { font-size: 24px; } /* Емодзі єнота */
-
+    .header { grid-column: 1 / -1; background: var(--header-gradient); border-radius: 12px; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .header-user-info { display: flex; align-items: center; gap: 10px; }
+    .racoon-icon { font-size: 24px; }
     .calendar-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
     .month-nav { display: flex; align-items: center; justify-content: center; gap: 30px; margin-bottom: 15px; }
     .month-title { font-size: 22px; font-weight: bold; color: #333; min-width: 200px; text-align: center; }
-
-    /* --- СІТКА (ЧІТКІ СІРІ ЛІНІЇ) --- */
-    .days-grid { 
-        display: grid; 
-        grid-template-columns: repeat(7, 1fr); 
-        border-top: 1px solid var(--border-color);
-        border-left: 1px solid var(--border-color);
-        border-radius: 4px;
-        overflow: hidden;
-    }
-
-    .week-day { 
-        background: #f1f3f5; 
-        padding: 12px; text-align: center; font-weight: bold; font-size: 13px; 
-        color: #333;
-        border-right: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
-    }
-    
-    /* Кольори вихідних адаптовані */
+    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
+    .week-day { background: #f1f3f5; padding: 12px; text-align: center; font-weight: bold; font-size: 13px; color: #333; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
     .wd-6 { color: var(--sat-color); background: #fff5f5; } 
     .wd-7 { color: var(--sun-color); background: #f3f0ff; }
-
-    .day { 
-        height: 100px; padding: 8px; cursor: pointer; background: #fff; 
-        border-right: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
-        transition: 0.15s; 
-        position: relative;
-    }
-    
-    /* Дні без дати: зливаються з ліловим фоном */
-    .empty-day { 
-        background: var(--bg-main) !important; 
-        cursor: default;
-    }
-
-    .day:hover:not(.empty-day) { background: #f8f9ff; box-shadow: inset 0 0 8px rgba(0,0,0,0.05); }
+    .day { height: 100px; padding: 8px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); transition: 0.15s; position: relative; }
+    .empty-day { background: var(--bg-main) !important; cursor: default; }
+    .day:hover:not(.empty-day) { background: #f8f9ff; }
     .is-weekend { background: #fafafa; }
     .is-holiday { background: #fff9db !important; }
-    
     .date-num { font-size: 14px; font-weight: 600; color: #222; }
-    
     .ev-badge { font-size: 10px; padding: 3px 6px; border-radius: 4px; margin-top: 4px; color: white; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
-    
-    /* Категорії */
     .cat-марафон { background: #2f9e44; } .cat-акція { background: #1971c2; } .cat-фотозвіт_до_свята { background: #d6336c; }
     .cat-профорієнтація { background: #e67700; } .cat-фотозвіт_до_дати { background: #862e9c; } .cat-фотозвіт { background: #495057; }
-
-    .stats-panel { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    
-    /* Форми та вікна */
+    .stats-panel { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); }
     #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.25); z-index: 1000; width: 360px; display: none; border: 1px solid var(--border-color); }
-    input, textarea, select { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-    input:focus, select:focus { border-color: #6c429c; outline: none; box-shadow: 0 0 5px rgba(108,66,156,0.3); }
-    .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.2s; }
-    .btn-save:hover { background: #563380; }
+    input, textarea, select { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+    .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:999; backdrop-filter: blur(2px); }
-    
-    .tools-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; color: white; cursor: pointer; font-size: 13px; margin-left: 5px; transition: 0.2s; }
-    .tools-btn:hover { background: rgba(255,255,255,0.3); }
 </style>
 </head>
 <body>
@@ -118,18 +47,12 @@
 <div class="main-container">
     <div class="header">
         <div class="header-text">
-            <div class="header-user-info">
-                <h2>Кабінет Валерії</h2>
-                <span class="racoon-icon">🦝</span>
-            </div>
-            <p style="margin:5px 0 0 0; font-size:13px; opacity:0.9">2025-2026 навчальний рік</p>
+            <div class="header-user-info"><h2>Кабінет Валерії</h2><span class="racoon-icon">🦝</span></div>
+            <p style="margin:5px 0 0 0; font-size:13px; opacity:0.9">2025-2026 навчальний рік • Автозбереження</p>
         </div>
         <div style="display:flex; gap:10px;">
-            <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="padding: 10px; border-radius: 8px; border: none; width: 180px; background: rgba(255,255,255,0.9);">
-            <button class="tools-btn" onclick="exportData()">📥 Бек-ап</button>
-            <button class="tools-btn" onclick="document.getElementById('importFile').click()">📤 Відновити</button>
-            <input type="file" id="importFile" style="display:none" onchange="importData(event)">
-            <button class="tools-btn" style="background:#fff; color:#6c429c; font-weight:bold; border:none;" onclick="generateReport()">📄 Звіт</button>
+            <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="padding: 10px; border-radius: 8px; border: none; width: 180px;">
+            <button style="background:#fff; color:#6c429c; font-weight:bold; border:none; padding: 8px 14px; border-radius: 8px; cursor: pointer;" onclick="generateReport()">📄 Звіт</button>
         </div>
     </div>
 
@@ -145,168 +68,126 @@
     <div class="stats-panel">
         <div style="font-weight:bold; color:#6c429c; margin-bottom:12px; border-bottom: 1px solid #dee2e6; padding-bottom: 5px;">📊 Статистика місяця</div>
         <div id="statsContent" style="font-size: 14px;"></div>
-        <div style="font-weight:bold; color:#6c429c; margin-top:25px; margin-bottom:12px; border-bottom: 1px solid #dee2e6; padding-bottom: 5px;">🏆 Лідер участь</div>
-        <div id="topClassContent" style="font-size: 14px; font-weight:bold; color:#333; background: #f3e8ff; padding: 12px; border-radius: 8px; text-align:center;"></div>
     </div>
 </div>
 
 <div id="eventForm">
-    <h3 id="selectedDateText" style="margin-top:0; color:#6c429c; font-size:18px;"></h3>
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:14px;">
-        <input type="checkbox" id="isHoliday" style="width:auto"> <label for="isHoliday">Святковий/Вихідний день</label>
-    </div>
+    <h3 id="selectedDateText" style="margin-top:0; color:#6c429c;"></h3>
+    <div style="font-size:14px; margin-bottom:10px;"><input type="checkbox" id="isHoliday"> Святковий день</div>
     <select id="eventCategory">
-        <option value="акція">Акція</option>
-        <option value="марафон">Марафон</option>
-        <option value="фотозвіт_до_свята">Фотозвіт до свята</option>
-        <option value="профорієнтація">Профорієнтація</option>
-        <option value="фотозвіт_до_дати">Фотозвіт до дати</option>
-        <option value="фотозвіт">Фотозвіт</option>
+        <option value="акція">Акція</option><option value="марафон">Марафон</option>
+        <option value="фотозвіт_до_свята">Фотозвіт до свята</option><option value="профорієнтація">Профорієнтація</option>
+        <option value="фотозвіт_до_дати">Фотозвіт до дати</option><option value="фотозвіт">Фотозвіт</option>
     </select>
     <input type="text" id="eventName" placeholder="Назва заходу">
     <input type="text" id="eventClass" placeholder="Клас / Вчитель">
     <textarea id="eventDetails" placeholder="Примітки" rows="3"></textarea>
-    <button class="btn-save" onclick="saveEvent()">Зберегти зміни</button>
-    <button style="background:none; border:none; color:#c92a2a; width:100%; margin-top:10px; cursor:pointer; font-size:12px;" onclick="deleteEvent()">Видалити запис</button>
+    <button class="btn-save" onclick="saveEvent()">Зберегти в хмару</button>
+    <button style="background:none; border:none; color:#c92a2a; width:100%; margin-top:10px; cursor:pointer; font-size:12px;" onclick="deleteEvent()">Видалити</button>
     <button style="background:none; border:none; color:#868e96; width:100%; margin-top:5px; cursor:pointer; font-size:12px;" onclick="closeAll()">Скасувати</button>
 </div>
 
-<div id="reportModal" style="width: 450px;">
-    <h3>Згенерований звіт</h3>
-    <textarea id="reportTextarea" style="height:250px; font-family: monospace; font-size:12px; width:100%" readonly></textarea>
-    <button class="btn-save" style="margin-top:10px;" onclick="closeAll()">Закрити</button>
-</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-<script>
-    // Скрипти залишаються без змін
-    let d = new Date();
-    let currMonth = d.getMonth();
-    let currYear = d.getFullYear();
-    let events = JSON.parse(localStorage.getItem('schoolEvents')) || {};
-    const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+  // КЛЮЧІ ВАЛЕРІЇ
+  const firebaseConfig = {
+    apiKey: "AIzaSyAjwzw-TF0zcrfFL6vfcTfGyeCO_UaoHxw",
+    authDomain: "valeria-calendar.firebaseapp.com",
+    projectId: "valeria-calendar",
+    storageBucket: "valeria-calendar.firebasestorage.app",
+    messagingSenderId: "294992605627",
+    appId: "1:294992605627:web:82a06b96a1ebf5b020d49e"
+  };
 
-    function render() {
-        const grid = document.getElementById('daysGrid');
-        const query = (document.getElementById('searchInp').value || "").toLowerCase();
-        document.getElementById('monthTitle').innerText = `${months[currMonth]} ${currYear}`;
-        grid.innerHTML = '';
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-        ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach((wd, i) => {
-            grid.innerHTML += `<div class="week-day wd-${i+1}">${wd}</div>`;
-        });
+  let d = new Date();
+  let currMonth = d.getMonth();
+  let currYear = d.getFullYear();
+  let events = {};
+  const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
 
-        let firstDay = new Date(currYear, currMonth, 1).getDay();
-        let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
-        let start = firstDay === 0 ? 6 : firstDay - 1;
-
-        let stats = {}; let classes = {};
-
-        for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty-day"></div>`;
-
-        for (let i = 1; i <= daysInMo; i++) {
-            const key = `${currYear}-${currMonth}-${i}`;
-            const dayDiv = document.createElement('div');
-            const dw = new Date(currYear, currMonth, i).getDay();
-            dayDiv.className = `day ${dw===0 || dw===6 ? 'is-weekend' : ''}`;
-            if (events[key] && events[key].isHoliday) dayDiv.classList.add('is-holiday');
-            
-            let html = `<span class="date-num">${i}</span>`;
-            if (events[key] && events[key].isHoliday) html += `<span style="font-size:9px;color:orange;display:block">✨ Свято</span>`;
-            
-            if (events[key] && events[key].name) {
-                const e = events[key];
-                if (e.name.toLowerCase().includes(query) || e.cls.toLowerCase().includes(query)) {
-                    html += `<div class="ev-badge cat-${e.category}">${e.name}</div>`;
-                    stats[e.category] = (stats[e.category] || 0) + 1;
-                    if(e.cls) classes[e.cls] = (classes[e.cls] || 0) + 1;
-                }
-            }
-            dayDiv.innerHTML = html;
-            dayDiv.onclick = () => openForm(i);
-            grid.appendChild(dayDiv);
-        }
-        updateStats(stats, classes);
-    }
-
-    function updateStats(stats, classes) {
-        let h = '';
-        for (let c in stats) h += `<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span>${c.replace(/_/g, ' ')}</span><b style="color:#6c429c">${stats[c]}</b></div>`;
-        document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#868e96">Заходів не знайдено</p>';
-        let top = Object.entries(classes).sort((a,b) => b[1] - a[1])[0];
-        document.getElementById('topClassContent').innerText = top ? top[0] : '...';
-    }
-
-    function openForm(day) {
-        window.selKey = `${currYear}-${currMonth}-${day}`;
-        document.getElementById('selectedDateText').innerText = `${day} ${months[currMonth]}`;
-        document.getElementById('eventForm').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-        let data = events[window.selKey] || {name:'', cls:'', det:'', category:'акція', isHoliday: false};
-        document.getElementById('eventName').value = data.name;
-        document.getElementById('eventClass').value = data.cls;
-        document.getElementById('eventDetails').value = data.det;
-        document.getElementById('eventCategory').value = data.category;
-        document.getElementById('isHoliday').checked = data.isHoliday;
-    }
-
-    function saveEvent() {
-        events[window.selKey] = {
-            name: document.getElementById('eventName').value,
-            cls: document.getElementById('eventClass').value,
-            det: document.getElementById('eventDetails').value,
-            category: document.getElementById('eventCategory').value,
-            isHoliday: document.getElementById('isHoliday').checked
-        };
-        localStorage.setItem('schoolEvents', JSON.stringify(events));
-        closeAll(); render();
-    }
-
-    function deleteEvent() {
-        if(confirm("Видалити запис за цей день?")) {
-            delete events[window.selKey];
-            localStorage.setItem('schoolEvents', JSON.stringify(events));
-            closeAll(); render();
-        }
-    }
-
-    function exportData() {
-        const blob = new Blob([JSON.stringify(events)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `backup_calendar.json`; a.click();
-    }
-
-    function importData(e) {
-        const r = new FileReader();
-        r.onload = (ev) => { events = JSON.parse(ev.target.result); localStorage.setItem('schoolEvents', JSON.stringify(events)); render(); };
-        r.readAsText(e.target.files[0]);
-    }
-
-    function changeMonth(s) {
-        currMonth += s;
-        if (currMonth < 0) { currMonth = 11; currYear--; }
-        if (currMonth > 11) { currMonth = 0; currYear++; }
-        render();
-    }
-
-    function generateReport() {
-        let r = `ЗВІТ ЗА ${months[currMonth].toUpperCase()} ${currYear}\n`;
-        for(let i=1; i<=31; i++){
-            let k = `${currYear}-${currMonth}-${i}`;
-            if(events[k] && events[k].name) r += `${i} число: ${events[k].name} (${events[k].cls})\n`;
-        }
-        document.getElementById('reportTextarea').value = r;
-        document.getElementById('reportModal').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-    }
-
-    function closeAll() {
-        document.getElementById('eventForm').style.display = 'none';
-        document.getElementById('reportModal').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
-    }
-
+  // Автоматичне отримання даних з хмари
+  onSnapshot(collection(db, "schoolEvents"), (snapshot) => {
+    events = {};
+    snapshot.forEach(doc => { events[doc.id] = doc.data(); });
     render();
+  });
+
+  window.saveEvent = async function() {
+    const data = {
+        name: document.getElementById('eventName').value,
+        cls: document.getElementById('eventClass').value,
+        det: document.getElementById('eventDetails').value,
+        category: document.getElementById('eventCategory').value,
+        isHoliday: document.getElementById('isHoliday').checked
+    };
+    await setDoc(doc(db, "schoolEvents", window.selKey), data);
+    closeAll();
+  };
+
+  window.deleteEvent = async function() {
+    if(confirm("Видалити?")) {
+        await deleteDoc(doc(db, "schoolEvents", window.selKey));
+        closeAll();
+    }
+  };
+
+  window.render = function() {
+    const grid = document.getElementById('daysGrid');
+    const query = (document.getElementById('searchInp').value || "").toLowerCase();
+    document.getElementById('monthTitle').innerText = `${months[currMonth]} ${currYear}`;
+    grid.innerHTML = '';
+    ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach((wd, i) => { grid.innerHTML += `<div class="week-day wd-${i+1}">${wd}</div>`; });
+
+    let firstDay = new Date(currYear, currMonth, 1).getDay();
+    let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
+    let start = firstDay === 0 ? 6 : firstDay - 1;
+    let stats = {};
+
+    for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty-day"></div>`;
+    for (let i = 1; i <= daysInMo; i++) {
+        const key = `${currYear}-${currMonth}-${i}`;
+        const dayDiv = document.createElement('div');
+        const dw = new Date(currYear, currMonth, i).getDay();
+        dayDiv.className = `day ${dw===0 || dw===6 ? 'is-weekend' : ''}`;
+        if (events[key] && events[key].isHoliday) dayDiv.classList.add('is-holiday');
+        let html = `<span class="date-num">${i}</span>`;
+        if (events[key]) {
+            if (events[key].isHoliday) html += `<span style="font-size:9px;color:orange;display:block">✨ Свято</span>`;
+            if (events[key].name && (events[key].name.toLowerCase().includes(query) || events[key].cls.toLowerCase().includes(query))) {
+                html += `<div class="ev-badge cat-${events[key].category}">${events[key].name}</div>`;
+                stats[events[key].category] = (stats[events[key].category] || 0) + 1;
+            }
+        }
+        dayDiv.innerHTML = html;
+        dayDiv.onclick = () => openForm(i);
+        grid.appendChild(dayDiv);
+    }
+    let h = '';
+    for (let c in stats) h += `<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span>${c.replace(/_/g, ' ')}</span><b>${stats[c]}</b></div>`;
+    document.getElementById('statsContent').innerHTML = h || '...';
+  };
+
+  window.openForm = function(day) {
+    window.selKey = `${currYear}-${currMonth}-${day}`;
+    document.getElementById('selectedDateText').innerText = `${day} ${months[currMonth]}`;
+    document.getElementById('eventForm').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+    let data = events[window.selKey] || {name:'', cls:'', det:'', category:'акція', isHoliday: false};
+    document.getElementById('eventName').value = data.name;
+    document.getElementById('eventClass').value = data.cls;
+    document.getElementById('eventDetails').value = data.det;
+    document.getElementById('eventCategory').value = data.category;
+    document.getElementById('isHoliday').checked = data.isHoliday;
+  };
+
+  window.changeMonth = function(s) { currMonth += s; if (currMonth < 0) { currMonth = 11; currYear--; } if (currMonth > 11) { currMonth = 0; currYear++; } render(); };
+  window.closeAll = function() { document.getElementById('eventForm').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; };
+  render();
 </script>
 </body>
 </html>
