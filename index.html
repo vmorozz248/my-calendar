@@ -11,6 +11,9 @@
         --header-gradient: linear-gradient(135deg, #6c429c, #d93d5c);
         --sat-color: #e03131;
         --sun-color: #7048e8;
+        /* Кольори категорій для синхронізації зі статистикою */
+        --clr-марафон: #2f9e44; --clr-акція: #1971c2; --clr-фотозвіт_до_свята: #d6336c;
+        --clr-профорієнтація: #e67700; --clr-фотозвіт_до_дати: #862e9c; --clr-фотозвіт: #495057;
     }
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); display: flex; flex-direction: column; align-items: center; margin: 0; min-height: 100vh; color: #212529; }
     .main-container { width: 98vw; max-width: 1200px; padding: 20px; display: grid; grid-template-columns: 1fr 320px; gap: 20px; box-sizing: border-box; }
@@ -31,9 +34,15 @@
     .is-holiday { background: #fff9db !important; }
     .date-num { font-size: 14px; font-weight: 600; color: #222; }
     .ev-badge { font-size: 10px; padding: 3px 6px; border-radius: 4px; margin-top: 4px; color: white; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
-    .cat-марафон { background: #2f9e44; } .cat-акція { background: #1971c2; } .cat-фотозвіт_до_свята { background: #d6336c; }
-    .cat-профорієнтація { background: #e67700; } .cat-фотозвіт_до_дати { background: #862e9c; } .cat-фотозвіт { background: #495057; }
-    .stats-panel { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); }
+    
+    .cat-марафон { background: var(--clr-марафон); } .cat-акція { background: var(--clr-акція); } .cat-фотозвіт_до_свята { background: var(--clr-фотозвіт_до_свята); }
+    .cat-профорієнтація { background: var(--clr-профорієнтація); } .cat-фотозвіт_до_дати { background: var(--clr-фотозвіт_до_дати); } .cat-фотозвіт { background: var(--clr-фотозвіт); }
+
+    .stats-panel { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+    .stat-label { display: flex; align-items: center; gap: 8px; }
+    .stat-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
     #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.25); z-index: 1000; width: 360px; display: none; border: 1px solid var(--border-color); }
     input, textarea, select { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
     .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
@@ -67,7 +76,7 @@
 
     <div class="stats-panel">
         <div style="font-weight:bold; color:#6c429c; margin-bottom:12px; border-bottom: 1px solid #dee2e6; padding-bottom: 5px;">📊 Статистика місяця</div>
-        <div id="statsContent" style="font-size: 14px;"></div>
+        <div id="statsContent"></div>
     </div>
 </div>
 
@@ -87,11 +96,16 @@
     <button style="background:none; border:none; color:#868e96; width:100%; margin-top:5px; cursor:pointer; font-size:12px;" onclick="closeAll()">Скасувати</button>
 </div>
 
+<div id="reportModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.25); z-index: 1000; width: 450px; display: none; border: 1px solid var(--border-color);">
+    <h3>Згенерований звіт</h3>
+    <textarea id="reportTextarea" style="height:250px; font-family: monospace; font-size:12px; width:100%" readonly></textarea>
+    <button class="btn-save" style="margin-top:10px;" onclick="closeAll()">Закрити</button>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // КЛЮЧІ ВАЛЕРІЇ
   const firebaseConfig = {
     apiKey: "AIzaSyAjwzw-TF0zcrfFL6vfcTfGyeCO_UaoHxw",
     authDomain: "valeria-calendar.firebaseapp.com",
@@ -110,7 +124,6 @@
   let events = {};
   const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
 
-  // Автоматичне отримання даних з хмари
   onSnapshot(collection(db, "schoolEvents"), (snapshot) => {
     events = {};
     snapshot.forEach(doc => { events[doc.id] = doc.data(); });
@@ -167,9 +180,21 @@
         dayDiv.onclick = () => openForm(i);
         grid.appendChild(dayDiv);
     }
+    
+    // ОНОВЛЕНО: Статистика з кольорами та великої літери
     let h = '';
-    for (let c in stats) h += `<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span>${c.replace(/_/g, ' ')}</span><b>${stats[c]}</b></div>`;
-    document.getElementById('statsContent').innerHTML = h || '...';
+    for (let cat in stats) {
+        const displayLabel = cat.charAt(0).toUpperCase() + cat.slice(1).replace(/_/g, ' ');
+        h += `
+        <div class="stat-row">
+            <div class="stat-label">
+                <span class="stat-dot" style="background: var(--clr-${cat})"></span>
+                <span>${displayLabel}</span>
+            </div>
+            <b>${stats[cat]}</b>
+        </div>`;
+    }
+    document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#868e96">Заходів не знайдено</p>';
   };
 
   window.openForm = function(day) {
@@ -185,8 +210,23 @@
     document.getElementById('isHoliday').checked = data.isHoliday;
   };
 
+  window.generateReport = function() {
+    let r = `ЗВІТ ЗА ${months[currMonth].toUpperCase()} ${currYear}\n\n`;
+    for(let i=1; i<=31; i++){
+        let k = `${currYear}-${currMonth}-${i}`;
+        if(events[k] && events[k].name) r += `${i} число: ${events[k].name} (${events[k].cls})\n`;
+    }
+    document.getElementById('reportTextarea').value = r;
+    document.getElementById('reportModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+  };
+
   window.changeMonth = function(s) { currMonth += s; if (currMonth < 0) { currMonth = 11; currYear--; } if (currMonth > 11) { currMonth = 0; currYear++; } render(); };
-  window.closeAll = function() { document.getElementById('eventForm').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; };
+  window.closeAll = function() { 
+    document.getElementById('eventForm').style.display = 'none'; 
+    document.getElementById('reportModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none'; 
+  };
   render();
 </script>
 </body>
