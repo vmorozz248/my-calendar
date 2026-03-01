@@ -116,4 +116,102 @@
   import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AI
+    apiKey: "AIzaSyAjwzw-TF0zcrfFL6vfcTfGyeCO_UaoHxw",
+    authDomain: "valeria-calendar.firebaseapp.com",
+    projectId: "valeria-calendar",
+    storageBucket: "valeria-calendar.firebasestorage.app",
+    messagingSenderId: "294992605627",
+    appId: "1:294992605627:web:82a06b96a1ebf5b020d49e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let d = new Date();
+  let currMonth = d.getMonth();
+  let currYear = d.getFullYear();
+  let events = {};
+  const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+
+  onSnapshot(collection(db, "schoolEvents"), (snapshot) => {
+    events = {}; snapshot.forEach(doc => { events[doc.id] = doc.data(); }); render();
+  });
+
+  window.saveEvent = async function() {
+    const data = {
+        name: document.getElementById('eventName').value,
+        cls: document.getElementById('eventClass').value,
+        teacher: document.getElementById('eventTeacher').value,
+        student: document.getElementById('eventStudent').value,
+        det: document.getElementById('eventDetails').value,
+        category: document.getElementById('eventCategory').value,
+        isHoliday: document.getElementById('isHoliday').checked
+    };
+    await setDoc(doc(db, "schoolEvents", window.selKey), data); closeAll();
+  };
+
+  window.deleteEvent = async function() {
+    if(confirm("Видалити запис?")) { await deleteDoc(doc(db, "schoolEvents", window.selKey)); closeAll(); }
+  };
+
+  window.render = function() {
+    const grid = document.getElementById('daysGrid');
+    const query = (document.getElementById('searchInp').value || "").toLowerCase();
+    document.getElementById('monthTitle').innerText = `${months[currMonth]} ${currYear}`;
+    grid.innerHTML = '';
+    ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach(wd => { grid.innerHTML += `<div class="week-day">${wd}</div>`; });
+
+    let firstDay = new Date(currYear, currMonth, 1).getDay();
+    let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
+    let start = firstDay === 0 ? 6 : firstDay - 1;
+    let stats = {};
+
+    for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty-day"></div>`;
+    for (let i = 1; i <= daysInMo; i++) {
+        const key = `${currYear}-${currMonth}-${i}`;
+        const dayDiv = document.createElement('div');
+        const dw = new Date(currYear, currMonth, i).getDay();
+        dayDiv.className = `day ${dw===0 || dw===6 ? 'is-weekend' : ''}`;
+        if (events[key] && events[key].isHoliday) dayDiv.classList.add('is-holiday');
+        let html = `<span class="date-num">${i}</span>`;
+        if (events[key]) {
+            const ev = events[key];
+            const matches = ev.name?.toLowerCase().includes(query) || ev.cls?.toLowerCase().includes(query) || ev.student?.toLowerCase().includes(query);
+            if (matches) {
+                const label = ev.cls ? ev.cls : (ev.student ? ev.student : ev.name);
+                html += `<div class="ev-badge cat-${ev.category}">${label}</div>`;
+                stats[ev.category] = (stats[ev.category] || 0) + 1;
+            }
+        }
+        dayDiv.innerHTML = html; dayDiv.onclick = () => openForm(i); grid.appendChild(dayDiv);
+    }
+    let h = '';
+    for (let cat in stats) {
+        const label = cat.charAt(0).toUpperCase() + cat.slice(1).replace(/_/g, ' ');
+        h += `<div class="stat-row"><span><span class="stat-dot" style="background:var(--clr-${cat})"></span>${label}</span><b>${stats[cat]}</b></div>`;
+    }
+    document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#999">Заходів не знайдено</p>';
+  };
+
+  window.openForm = function(day) {
+    window.selKey = `${currYear}-${currMonth}-${day}`;
+    document.getElementById('selectedDateText').innerText = `${day} ${months[currMonth]}`;
+    document.getElementById('eventForm').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+    let data = events[window.selKey] || {name:'', cls:'', teacher:'', student:'', det:'', category:'акція', isHoliday:false};
+    document.getElementById('eventName').value = data.name || '';
+    document.getElementById('eventClass').value = data.cls || '';
+    document.getElementById('eventTeacher').value = data.teacher || '';
+    document.getElementById('eventStudent').value = data.student || '';
+    document.getElementById('eventDetails').value = data.det || '';
+    document.getElementById('eventCategory').value = data.category;
+    document.getElementById('isHoliday').checked = data.isHoliday;
+  };
+
+  window.goToday = function() { let now = new Date(); currMonth = now.getMonth(); currYear = now.getFullYear(); render(); };
+  window.changeMonth = function(s) { currMonth += s; if (currMonth < 0) { currMonth = 11; currYear--; } if (currMonth > 11) { currMonth = 0; currYear++; } render(); };
+  window.closeAll = function() { document.getElementById('eventForm').style.display='none'; document.getElementById('overlay').style.display='none'; };
+  render();
+</script>
+</body>
+</html>
