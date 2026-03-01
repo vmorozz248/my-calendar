@@ -13,14 +13,12 @@
         --clr-марафон: #2f9e44; --clr-акція: #1971c2; --clr-фотозвіт_до_свята: #d6336c;
         --clr-профорієнтація: #e67700; --clr-фотозвіт_до_дати: #862e9c; --clr-фотозвіт: #495057;
     }
-    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #212529; min-height: 100vh; overflow-x: hidden; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #212529; min-height: 100vh; }
     
     .header { width: 100%; background: var(--header-gradient); padding: 12px 25px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 10; }
     .header-controls { display: flex; gap: 10px; align-items: center; }
 
-    .main-container { 
-        display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box; align-items: flex-start;
-    }
+    .main-container { display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box; align-items: flex-start; }
 
     .calendar-section { flex: 1; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .stats-panel { width: 300px; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); height: fit-content; }
@@ -38,18 +36,23 @@
     .date-num { font-size: 16px; font-weight: bold; }
     .ev-badge { font-size: 12px; padding: 4px 6px; border-radius: 4px; margin-top: 6px; color: white; line-height: 1.2; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    /* ВИПРАВЛЕНО: Обмеження для вікна заповнення */
+    /* ФІКСОВАНИЙ ТА РОЗУМНИЙ ВИГЛЯД ФОРМИ */
     #eventForm { 
         position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
         background: white; padding: 25px; border-radius: 12px; 
         box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 2000; 
         width: 92%; max-width: 400px; display: none; 
         border: 1px solid var(--border-color); box-sizing: border-box;
-        max-height: 85vh; /* Не більше 85% висоти екрана */
-        overflow-y: auto; /* Додає прокрутку, якщо тексту багато */
+        max-height: 85vh; /* Ліміт висоти */
+        overflow-y: auto; /* Прокрутка всередині */
+        resize: none; /* ЗАБОРОНА розтягування мишкою */
     }
 
-    input, textarea, select { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+    input, select { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+    
+    /* Заборона розтягувати поле приміток вручну */
+    textarea { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; resize: none; }
+
     .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:1500; backdrop-filter: blur(2px); }
     
@@ -65,7 +68,7 @@
 <div class="header">
     <div class="header-text">
         <h2 style="margin:0; font-size:20px;">Кабінет Валерії 🦝</h2>
-        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Розумне вікно</p>
+        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Фіксована форма</p>
     </div>
     <div class="header-controls">
         <button onclick="goToday()" style="background:#fff; color:#6c429c; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:13px;">Сьогодні</button>
@@ -104,7 +107,7 @@
         <input type="text" id="eventTeacher" placeholder="Вчитель">
     </div>
     <input type="text" id="eventStudent" placeholder="ПІБ учня">
-    <textarea id="eventDetails" placeholder="Примітки (тепер тут можна писати багато)" rows="3"></textarea>
+    <textarea id="eventDetails" placeholder="Примітки" rows="4"></textarea>
     <button class="btn-save" onclick="saveEvent()">Зберегти</button>
     <button style="background:none; border:none; color:#c92a2a; width:100%; margin-top:12px; cursor:pointer; font-size:12px;" onclick="deleteEvent()">Видалити</button>
     <button style="background:none; border:none; color:#868e96; width:100%; margin-top:8px; cursor:pointer; font-size:12px;" onclick="closeAll()">Скасувати</button>
@@ -189,7 +192,7 @@
         const label = cat.charAt(0).toUpperCase() + cat.slice(1).replace(/_/g, ' ');
         h += `<div class="stat-row"><span><span class="stat-dot" style="background:var(--clr-${cat})"></span>${label}</span><b>${stats[cat]}</b></div>`;
     }
-    document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#999">Заходів немає</p>';
+    document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#999">Немає заходів</p>';
   };
 
   window.openForm = function(day) {
