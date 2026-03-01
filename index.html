@@ -13,7 +13,9 @@
     }
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #212529; min-height: 100vh; }
     
-    .header { width: 100%; background: var(--header-gradient); padding: 12px 25px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 10; }
+    .header { width: 100%; background: var(--header-gradient); padding: 12px 25px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 100; }
+    .header-controls { display: flex; gap: 10px; align-items: center; }
+
     .main-container { display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box; align-items: flex-start; }
     
     .calendar-section { flex: 1; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); min-height: 600px; }
@@ -24,15 +26,14 @@
     .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); background: white; }
     .week-day { background: #f1f3f5; padding: 12px; text-align: center; font-weight: bold; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); font-size: 14px; }
     
-    .day { min-height: 120px; padding: 8px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; transition: 0.2s; box-sizing: border-box; z-index: 1; }
+    .day { min-height: 120px; padding: 8px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; transition: 0.2s; box-sizing: border-box; }
     .day:hover { background: #fdfaff; }
     .day.highlighted { background: #f3e8ff; box-shadow: inset 0 0 10px #6c429c; border: 2px solid #6c429c; z-index: 2; }
     
     .date-num { font-size: 16px; font-weight: bold; margin-bottom: 5px; display: block; }
     .ev-badge { font-size: 10px; padding: 2px 4px; border-radius: 3px; margin-bottom: 2px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; line-height: 1.2; }
 
-    /* Форма заповнення */
-    #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 3000; width: 95%; max-width: 450px; display: none; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); }
+    #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 3000; width: 95%; max-width: 450px; display: none; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); }
     .event-block { border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px; position: relative; background: #fcfcfc; }
     
     .btn-add { background: #2f9e44; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; margin-bottom: 15px; font-weight: bold; }
@@ -43,7 +44,6 @@
 
     .is-weekend { background: #fafafa; } .is-holiday { background: #fff9db !important; }
     .stat-item { padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 6px; border: 1px solid transparent; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.2s; }
-    .stat-item:hover { background: #f3e8ff; }
     .stat-item.active { background: #6c429c; color: white; }
     
     .cat-марафон { background: var(--clr-марафон); } .cat-акція { background: var(--clr-акція); } .cat-фотозвіт_до_свята { background: var(--clr-фотозвіт_до_свята); }
@@ -57,11 +57,12 @@
 <div class="header">
     <div class="header-text">
         <h2 style="margin:0; font-size:20px;">Кабінет Валерії 🦝</h2>
-        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Мульти-заходи</p>
+        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Хмара</p>
     </div>
-    <div style="display:flex; gap:10px; align-items: center;">
+    <div class="header-controls">
         <button onclick="goToday()" style="background:#fff; color:#6c429c; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold;">Сьогодні</button>
-        <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="width:120px; border-radius:8px; border:none; padding:8px;">
+        <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="width:100px; border-radius:8px; border:none; padding:8px;">
+        <button onclick="generateReport()" style="background:#fff; color:#6c429c; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:bold;">Звіт</button>
     </div>
 </div>
 
@@ -75,7 +76,7 @@
         <div class="days-grid" id="daysGrid"></div>
     </div>
     <div class="stats-panel">
-        <div style="font-weight:bold; color:#6c429c; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px;">📊 Події місяця (клік для підсвітки)</div>
+        <div style="font-weight:bold; color:#6c429c; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px;">📊 Події місяця</div>
         <div id="statsContent"></div>
     </div>
 </div>
@@ -89,6 +90,12 @@
     <button class="btn-add" onclick="addNewEventBlock()">+ Додати ще захід</button>
     <button class="btn-save" onclick="saveAllEvents()">Зберегти зміни</button>
     <button style="width:100%; background:none; border:none; color:#888; margin-top:12px; cursor:pointer; font-size:13px;" onclick="closeAll()">Скасувати</button>
+</div>
+
+<div id="reportModal">
+    <h3 style="margin-top:0; color:#6c429c;">Звіт за місяць</h3>
+    <textarea id="reportTextarea" style="height:300px; font-family:monospace; font-size:12px; width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;" readonly></textarea>
+    <button class="btn-save" style="margin-top:15px;" onclick="closeAll()">Закрити звіт</button>
 </div>
 
 <script type="module">
@@ -156,11 +163,9 @@
     document.getElementById('selectedDateText').innerText = `${day} ${months[currMonth]}`;
     const data = events[window.selKey] || { items: [], isHoliday: false };
     document.getElementById('isHoliday').checked = data.isHoliday;
-    
     document.getElementById('eventList').innerHTML = '';
     if (data.items.length === 0) addNewEventBlock();
     else data.items.forEach(ev => addNewEventBlock(ev));
-    
     document.getElementById('eventForm').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
   };
@@ -169,7 +174,7 @@
     const div = document.createElement('div');
     div.className = 'event-block';
     div.innerHTML = `
-        <button class="btn-del" onclick="this.parentElement.remove()" style="position:absolute; right:10px; top:10px; color:#c92a2a; border:none; background:none; cursor:pointer; font-size:11px; text-decoration:underline;">Видалити</button>
+        <button onclick="this.parentElement.remove()" style="position:absolute;right:10px;top:10px;color:red;border:none;background:none;cursor:pointer;">✖</button>
         <select class="ev-cat">
             <option value="акція" ${val.category==='акція'?'selected':''}>Акція</option>
             <option value="марафон" ${val.category==='марафон'?'selected':''}>Марафон</option>
@@ -191,27 +196,34 @@
     const blocks = document.querySelectorAll('.event-block');
     const items = [];
     blocks.forEach(b => {
-        const name = b.querySelector('.ev-name').value;
-        if (name) {
-            items.push({
-                category: b.querySelector('.ev-cat').value,
-                name: name,
-                cls: b.querySelector('.ev-cls').value,
-                teacher: b.querySelector('.ev-teacher').value,
-                det: b.querySelector('.ev-det').value
-            });
-        }
+        const n = b.querySelector('.ev-name').value;
+        if (n) items.push({ category: b.querySelector('.ev-cat').value, name: n, cls: b.querySelector('.ev-cls').value, teacher: b.querySelector('.ev-teacher').value, det: b.querySelector('.ev-det').value });
     });
-    await setDoc(doc(db, "schoolEvents", window.selKey), {
-        items: items,
-        isHoliday: document.getElementById('isHoliday').checked
-    });
+    await setDoc(doc(db, "schoolEvents", window.selKey), { items: items, isHoliday: document.getElementById('isHoliday').checked });
     closeAll();
+  };
+
+  window.generateReport = function() {
+    let r = `ЗВІТ ЗА ${months[currMonth].toUpperCase()} ${currYear}\n\n`;
+    for(let i=1; i<=31; i++){
+        const key = `${currYear}-${currMonth}-${i}`;
+        if(events[key] && events[key].items && events[key].items.length > 0) {
+            r += `${i} ${months[currMonth]}:\n`;
+            events[key].items.forEach((ev, idx) => {
+                r += `  ${idx+1}. ${ev.name} (Клас: ${ev.cls || '-'}, Вчитель: ${ev.teacher || '-'})\n`;
+                if(ev.det) r += `     Примітки: ${ev.det}\n`;
+            });
+            r += `--------------------------\n`;
+        }
+    }
+    document.getElementById('reportTextarea').value = r;
+    document.getElementById('reportModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
   };
 
   window.goToday = () => { let n = new Date(); currMonth = n.getMonth(); currYear = n.getFullYear(); render(); };
   window.changeMonth = (s) => { currMonth += s; if(currMonth<0){currMonth=11;currYear--;} if(currMonth>11){currMonth=0;currYear++;} render(); };
-  window.closeAll = () => { document.getElementById('eventForm').style.display='none'; document.getElementById('overlay').style.display='none'; };
+  window.closeAll = () => { document.getElementById('eventForm').style.display='none'; document.getElementById('reportModal').style.display='none'; document.getElementById('overlay').style.display='none'; };
   render();
 </script>
 </body>
