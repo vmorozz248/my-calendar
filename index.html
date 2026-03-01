@@ -13,49 +13,57 @@
         --clr-марафон: #2f9e44; --clr-акція: #1971c2; --clr-фотозвіт_до_свята: #d6336c;
         --clr-профорієнтація: #e67700; --clr-фотозвіт_до_дати: #862e9c; --clr-фотозвіт: #495057;
     }
-    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #212529; }
+    body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #212529; min-height: 100vh; }
     
+    .header { width: 100%; background: var(--header-gradient); padding: 12px 25px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 10; }
+    .header-controls { display: flex; gap: 10px; align-items: center; }
+
     .main-container { 
-        display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box;
+        display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; box-sizing: border-box; align-items: flex-start;
     }
 
-    .calendar-section { flex: 1; background: white; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .stats-panel { width: 300px; background: white; border-radius: 12px; padding: 15px; border: 1px solid var(--border-color); height: fit-content; }
-    .day { height: 110px; padding: 8px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; z-index: 1; }
-    .date-num { font-size: 16px; font-weight: bold; }
-    .ev-badge { font-size: 12px; padding: 4px 6px; border-radius: 4px; margin-top: 5px; color: white; line-height: 1.2; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* Календарна секція */
+    .calendar-section { flex: 1; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); min-height: 600px; }
+    .month-nav { display: flex; align-items: center; justify-content: center; gap: 25px; margin-bottom: 20px; }
+    .month-title { font-size: 22px; font-weight: bold; min-width: 180px; text-align: center; color: #333; }
+    
+    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; background: white; }
+    .week-day { background: #f1f3f5; padding: 12px; text-align: center; font-weight: bold; font-size: 14px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+    
+    .day { height: 110px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; transition: 0.2s; box-sizing: border-box; }
+    .day:hover { background: #fdfaff; }
+    .empty-day { background: #f8f9fa !important; cursor: default; }
+    .is-weekend { background: #fafafa; } .is-holiday { background: #fff9db !important; }
+    .date-num { font-size: 16px; font-weight: bold; color: #444; }
 
+    .ev-badge { font-size: 12px; padding: 4px 6px; border-radius: 4px; margin-top: 6px; color: white; line-height: 1.2; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+    
+    /* Статистика */
+    .stats-panel { width: 300px; background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+    .stat-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; }
+
+    /* Адаптація для МОБІЛЬНИХ */
     @media (max-width: 900px) {
         .main-container { flex-direction: column; padding: 10px; }
         .stats-panel { width: 100%; box-sizing: border-box; }
-        .header { flex-direction: column; height: auto !important; padding: 15px 10px; text-align: center; }
-        .header-controls { width: 100%; justify-content: center; margin-top: 10px; gap: 5px; }
-        .day { height: 85px !important; padding: 4px !important; }
+        .header { flex-direction: column; height: auto !important; padding: 15px 10px; gap: 10px; }
+        .header-controls { width: 100%; justify-content: center; gap: 5px; }
+        .header-controls button, .header-controls input { font-size: 12px; padding: 8px; }
+        .day { height: 85px !important; padding: 5px !important; }
         .date-num { font-size: 13px !important; }
         .ev-badge { font-size: 9px !important; padding: 2px 4px !important; }
+        .calendar-section { min-height: auto; padding: 15px; }
     }
 
-    .header { width: 100%; background: var(--header-gradient); padding: 12px 25px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; position: relative; z-index: 10; }
-    .header-controls { display: flex; gap: 10px; align-items: center; }
-    
-    .month-nav { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 15px; }
-    .month-title { font-size: 20px; font-weight: bold; min-width: 160px; text-align: center; }
-    
-    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
-    .week-day { background: #f1f3f5; padding: 10px; text-align: center; font-weight: bold; font-size: 13px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-    .is-weekend { background: #fafafa; } .is-holiday { background: #fff9db !important; }
-    
+    /* Категорії */
     .cat-марафон { background: var(--clr-марафон); } .cat-акція { background: var(--clr-акція); } .cat-фотозвіт_до_свята { background: var(--clr-фотозвіт_до_свята); }
     .cat-профорієнтація { background: var(--clr-профорієнтація); } .cat-фотозвіт_до_дати { background: var(--clr-фотозвіт_до_дати); } .cat-фотозвіт { background: var(--clr-фотозвіт); }
 
-    .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-    .stat-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 10px; }
-
-    #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 2000; width: 92%; max-width: 400px; display: none; border: 1px solid var(--border-color); box-sizing: border-box; }
+    /* Форми */
+    #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 2000; width: 92%; max-width: 400px; display: none; border: 1px solid var(--border-color); box-sizing: border-box; }
     input, textarea, select { width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
     .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    
-    /* ВИПРАВЛЕНО: Overlay тепер не блокує клітинки, коли форма закрита */
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:1500; backdrop-filter: blur(2px); }
 </style>
 </head>
@@ -66,7 +74,7 @@
 <div class="header">
     <div class="header-text">
         <h2 style="margin:0; font-size:20px;">Кабінет Валерії 🦝</h2>
-        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Хмарне збереження</p>
+        <p style="margin:2px 0 0 0; font-size:12px; opacity:0.8">2025-2026 н.р. • Хмарна синхронізація</p>
     </div>
     <div class="header-controls">
         <button onclick="goToday()" style="background:#fff; color:#6c429c; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:13px;">Сьогодні</button>
@@ -86,7 +94,7 @@
     </div>
 
     <div class="stats-panel">
-        <div style="font-weight:bold; color:#6c429c; margin-bottom:12px; border-bottom:1px solid #eee; padding-bottom:5px;">📊 Статистика місяця</div>
+        <div style="font-weight:bold; color:#6c429c; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px;">📊 Статистика місяця</div>
         <div id="statsContent"></div>
     </div>
 </div>
@@ -191,21 +199,6 @@
         h += `<div class="stat-row"><span><span class="stat-dot" style="background:var(--clr-${cat})"></span>${label}</span><b>${stats[cat]}</b></div>`;
     }
     document.getElementById('statsContent').innerHTML = h || '<p style="font-size:13px;color:#999">Заходів не знайдено</p>';
-  };
-
-  window.openForm = function(day) {
-    window.selKey = `${currYear}-${currMonth}-${day}`;
-    document.getElementById('selectedDateText').innerText = `${day} ${months[currMonth]}`;
-    document.getElementById('eventForm').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
-    let data = events[window.selKey] || {name:'', cls:'', teacher:'', student:'', det:'', category:'акція', isHoliday:false};
-    document.getElementById('eventName').value = data.name || '';
-    document.getElementById('eventClass').value = data.cls || '';
-    document.getElementById('eventTeacher').value = data.teacher || '';
-    document.getElementById('eventStudent').value = data.student || '';
-    document.getElementById('eventDetails').value = data.det || '';
-    document.getElementById('eventCategory').value = data.category;
-    document.getElementById('isHoliday').checked = data.isHoliday;
   };
 
   window.goToday = function() { let now = new Date(); currMonth = now.getMonth(); currYear = now.getFullYear(); render(); };
