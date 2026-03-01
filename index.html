@@ -16,14 +16,14 @@
     }
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); display: flex; flex-direction: column; align-items: center; margin: 0; min-height: 100vh; color: #212529; }
     .main-container { width: 98vw; max-width: 1200px; padding: 20px; display: grid; grid-template-columns: 1fr 320px; gap: 20px; box-sizing: border-box; }
-    .header { grid-column: 1 / -1; background: var(--header-gradient); border-radius: 12px; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .header { grid-column: 1 / -1; background: var(--header-gradient); border-radius: 12px; padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .header-user-info { display: flex; align-items: center; gap: 10px; }
     .racoon-icon { font-size: 24px; }
     .calendar-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
     .month-nav { display: flex; align-items: center; justify-content: center; gap: 30px; margin-bottom: 15px; }
     .month-title { font-size: 22px; font-weight: bold; color: #333; min-width: 200px; text-align: center; }
     .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; }
-    .week-day { background: #f1f3f5; padding: 12px; text-align: center; font-weight: bold; font-size: 13px; color: #333; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+    .week-day { background: #f1f3f5; padding: 10px; text-align: center; font-weight: bold; font-size: 13px; color: #333; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
     .wd-6 { color: var(--sat-color); background: #fff5f5; } 
     .wd-7 { color: var(--sun-color); background: #f3f0ff; }
     .day { height: 110px; padding: 6px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); transition: 0.15s; position: relative; overflow: hidden; }
@@ -34,8 +34,8 @@
     .date-num { font-size: 14px; font-weight: 600; color: #222; }
     
     .ev-badge { font-size: 10px; padding: 3px 5px; border-radius: 4px; margin-top: 3px; color: white; display: block; line-height: 1.2; font-weight: 500; }
-    .ev-badge b { display: block; font-size: 11px; } /* Для Класу */
-    .ev-badge i { font-style: normal; opacity: 0.9; display: block; } /* Для ПІБ */
+    .ev-badge b { display: block; font-size: 11px; }
+    .ev-badge i { font-style: normal; opacity: 0.9; display: block; }
 
     .cat-марафон { background: var(--clr-марафон); } .cat-акція { background: var(--clr-акція); } .cat-фотозвіт_до_свята { background: var(--clr-фотозвіт_до_свята); }
     .cat-профорієнтація { background: var(--clr-профорієнтація); } .cat-фотозвіт_до_дати { background: var(--clr-фотозвіт_до_дати); } .cat-фотозвіт { background: var(--clr-фотозвіт); }
@@ -44,9 +44,10 @@
     .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
     .stat-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
 
-    #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.25); z-index: 1000; width: 380px; display: none; border: 1px solid var(--border-color); }
-    input, textarea, select { width: 100%; margin: 6px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-    .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    /* ВИПРАВЛЕНО: Гнучке вікно форми */
+    #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.25); z-index: 1000; width: 90%; max-width: 380px; display: none; border: 1px solid var(--border-color); max-height: 90vh; overflow-y: auto; }
+    input, textarea, select { width: 100%; margin: 5px 0; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+    .btn-save { background: #6c429c; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 8px; }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; z-index:999; backdrop-filter: blur(2px); }
 </style>
 </head>
@@ -61,7 +62,7 @@
             <p style="margin:5px 0 0 0; font-size:13px; opacity:0.9">2025-2026 навчальний рік • Робота з класами</p>
         </div>
         <div style="display:flex; gap:10px;">
-            <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="padding: 10px; border-radius: 8px; border: none; width: 180px;">
+            <input type="text" id="searchInp" placeholder="Пошук..." oninput="render()" style="padding: 8px; border-radius: 8px; border: none; width: 150px;">
             <button style="background:#fff; color:#6c429c; font-weight:bold; border:none; padding: 8px 14px; border-radius: 8px; cursor: pointer;" onclick="generateReport()">📄 Звіт</button>
         </div>
     </div>
@@ -82,8 +83,10 @@
 </div>
 
 <div id="eventForm">
-    <h3 id="selectedDateText" style="margin-top:0; color:#6c429c; font-size:18px;"></h3>
-    <div style="font-size:13px; margin-bottom:5px;"><input type="checkbox" id="isHoliday"> Святковий/Вихідний день</div>
+    <h3 id="selectedDateText" style="margin:0 0 10px 0; color:#6c429c; font-size:18px; text-align: center;"></h3>
+    <div style="font-size:13px; margin-bottom:5px; text-align: center;">
+        <input type="checkbox" id="isHoliday" style="width: auto;"> Святковий/Вихідний день
+    </div>
     
     <select id="eventCategory">
         <option value="акція">Акція</option><option value="марафон">Марафон</option>
@@ -91,22 +94,22 @@
         <option value="фотозвіт_до_дати">Фотозвіт до дати</option><option value="фотозвіт">Фотозвіт</option>
     </select>
     
-    <input type="text" id="eventName" placeholder="Назва заходу (напр. День Козацтва)">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <input type="text" id="eventClass" placeholder="Клас (напр. 4-А)">
+    <input type="text" id="eventName" placeholder="Назва заходу">
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 8px;">
+        <input type="text" id="eventClass" placeholder="Клас">
         <input type="text" id="eventTeacher" placeholder="Вчитель">
     </div>
-    <input type="text" id="eventStudent" placeholder="ПІБ учня (якщо індивідуально)">
-    <textarea id="eventDetails" placeholder="Додаткові примітки" rows="2"></textarea>
+    <input type="text" id="eventStudent" placeholder="ПІБ учня (індивідуально)">
+    <textarea id="eventDetails" placeholder="Примітки" rows="2"></textarea>
     
     <button class="btn-save" onclick="saveEvent()">Зберегти в хмару</button>
-    <button style="background:none; border:none; color:#c92a2a; width:100%; margin-top:10px; cursor:pointer; font-size:12px;" onclick="deleteEvent()">Видалити запис</button>
+    <button style="background:none; border:none; color:#c92a2a; width:100%; margin-top:10px; cursor:pointer; font-size:12px;" onclick="deleteEvent()">Видалити</button>
     <button style="background:none; border:none; color:#868e96; width:100%; margin-top:5px; cursor:pointer; font-size:12px;" onclick="closeAll()">Скасувати</button>
 </div>
 
-<div id="reportModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,0.25); z-index: 1000; width: 480px; display: none; border: 1px solid var(--border-color);">
-    <h3>Згенерований звіт</h3>
-    <textarea id="reportTextarea" style="height:300px; font-family: monospace; font-size:12px; width:100%; padding: 10px; border-radius: 5px;" readonly></textarea>
+<div id="reportModal">
+    <h3 style="margin-top:0">Згенерований звіт</h3>
+    <textarea id="reportTextarea" style="height:250px; font-family: monospace; font-size:12px; width:100%; padding: 10px;" readonly></textarea>
     <button class="btn-save" style="margin-top:10px;" onclick="closeAll()">Закрити</button>
 </div>
 
@@ -188,12 +191,8 @@
                                  ev.teacher?.toLowerCase().includes(query);
 
             if (matchesQuery) {
-                if (ev.isHoliday) html += `<span style="font-size:9px;color:orange;display:block">✨ Свято</span>`;
-                
-                // Вирішуємо, що показати у клітинці
                 const mainLabel = ev.cls ? `<b>${ev.cls}</b>` : '';
                 const subLabel = ev.student ? `<i>${ev.student}</i>` : (ev.teacher ? `<i>${ev.teacher}</i>` : `<i>${ev.name}</i>`);
-                
                 html += `<div class="ev-badge cat-${ev.category}">${mainLabel}${subLabel}</div>`;
                 stats[ev.category] = (stats[ev.category] || 0) + 1;
             }
@@ -229,16 +228,11 @@
 
   window.generateReport = function() {
     let r = `ЗВІТ ЗА ${months[currMonth].toUpperCase()} ${currYear}\n`;
-    r += `------------------------------------------\n`;
     for(let i=1; i<=31; i++){
         let k = `${currYear}-${currMonth}-${i}`;
         if(events[k] && events[k].name) {
             const ev = events[k];
-            r += `${i} число: [${ev.category.toUpperCase()}] ${ev.name}\n`;
-            if(ev.cls) r += `   Клас: ${ev.cls}\n`;
-            if(ev.student) r += `   Учень: ${ev.student}\n`;
-            if(ev.teacher) r += `   Вчитель: ${ev.teacher}\n`;
-            r += `------------------------------------------\n`;
+            r += `${i} число: ${ev.name}\n   Клас: ${ev.cls || '-'}; Учень: ${ev.student || '-'}; Вчитель: ${ev.teacher || '-'}\n`;
         }
     }
     document.getElementById('reportTextarea').value = r;
