@@ -40,17 +40,19 @@
     .day:hover { background: #fdfaff; }
     .day.is-holiday { background: #fff9db !important; }
     
-    /* ПІДСВІЧУВАННЯ */
+    /* ВИПРАВЛЕНО: ДИНАМІЧНЕ ПІДСВІЧУВАННЯ */
     .day.highlight-шоп { background: #e6ecf7 !important; border: 2px solid var(--clr-шоп) !important; }
     .day.highlight-марафон { background: #e6ffed !important; border: 2px solid var(--clr-марафон) !important; }
     .day.highlight-акція { background: #e7f5ff !important; border: 2px solid var(--clr-акція) !important; }
     .day.highlight-фотозвіт_до_свята { background: #fff0f6 !important; border: 2px solid var(--clr-фотозвіт_до_свята) !important; }
     .day.highlight-профорієнтація { background: #f0f7f1 !important; border: 2px solid var(--accent-color) !important; }
+    .day.highlight-фотозвіт_до_дати { background: #f8f0fc !important; border: 2px solid var(--clr-фотозвіт_до_дати) !important; }
+    .day.highlight-фотозвіт { background: #f8f9fa !important; border: 2px solid var(--clr-фотозвіт) !important; }
 
     .date-num { font-size: 18px; font-weight: bold; margin-bottom: 8px; display: block; color: #1a3a1e; }
     .ev-badge { font-size: 11px; padding: 3px 5px; border-radius: 4px; margin-bottom: 3px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; line-height: 1.3; font-weight: 500; }
 
-    /* ВИПРАВЛЕНА ФОРМА */
+    /* ПРАВИЛЬНА ФОРМА */
     #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.3); z-index: 3000; width: 95%; max-width: 500px; display: none; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); }
     .event-block { border: 1px solid #ddd; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; background: #f9fdf9; display: flex; flex-direction: column; gap: 8px; }
     
@@ -60,13 +62,13 @@
     input, select, textarea { width: 100%; padding: 12px; border: 1px solid #bbb; border-radius: 10px; box-sizing: border-box; font-size: 15px; color: #333; margin: 0; }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(26,58,30,0.6); display:none; z-index: 2500; backdrop-filter: blur(3px); }
 
+    /* СТАТИСТИКА */
     .stat-item { padding: 10px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 10px; border-left: 6px solid; background: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.08); transition: 0.2s; }
     .stat-item.active { background: #dceae0 !important; color: #1a3a1e !important; font-weight: bold; }
     
     .cat-марафон { background: var(--clr-марафон); } .cat-акція { background: var(--clr-акція); } .cat-фотозвіт_до_свята { background: var(--clr-фотозвіт_до_свята); }
     .cat-профорієнтація { background: var(--clr-профорієнтація); } .cat-фотозвіт_до_дати { background: var(--clr-фотозвіт_до_дати); } .cat-фотозвіт { background: var(--clr-фотозвіт); }
     .cat-шоп { background: var(--clr-шоп); }
-    .prof-fields { background: #f0f7f1; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent-color); display: flex; flex-direction: column; gap: 8px; }
 </style>
 </head>
 <body>
@@ -76,7 +78,7 @@
 <div class="header">
     <div class="header-text">
         <h2 style="margin:0;">Кабінет Валерії 🦝</h2>
-        <p style="margin:4px 0 0 0; font-size:14px; opacity:0.9;">2025-2026 н.р. • Стабільна версія 🌿</p>
+        <p style="margin:4px 0 0 0; font-size:14px; opacity:0.9;">2025-2026 н.р. • Підсвітка виправлена 🌿</p>
     </div>
     <div class="header-controls">
         <button onclick="goToday()">Сьогодні</button>
@@ -132,6 +134,7 @@
   window.render = function() {
     try {
         const grid = document.getElementById('daysGrid');
+        const query = (document.querySelector('input[placeholder="Пошук..."]')?.value || "").toLowerCase();
         document.getElementById('monthTitle').innerText = `${months[currMonth]} ${currYear}`;
         grid.innerHTML = '';
         ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach(wd => { grid.innerHTML += `<div class="week-day">${wd}</div>`; });
@@ -151,9 +154,13 @@
                 let items = events[key].items || (events[key].name ? [events[key]] : []);
                 items.forEach(ev => {
                     const cat = ev.category || 'фотозвіт';
-                    html += `<div class="ev-badge cat-${cat}">${ev.name}</div>`;
-                    if (!statsData[cat]) statsData[cat] = { count: 0 };
-                    statsData[cat].count++;
+                    const name = ev.name || '';
+                    if (name.toLowerCase().includes(query)) {
+                        if (highlightedCat === cat) dayDiv.classList.add(`highlight-${cat}`);
+                        html += `<div class="ev-badge cat-${cat}">${ev.name}</div>`;
+                        if (!statsData[cat]) statsData[cat] = { count: 0 };
+                        statsData[cat].count++;
+                    }
                 });
             }
             dayDiv.innerHTML = html; dayDiv.onclick = () => openForm(i); grid.appendChild(dayDiv);
@@ -163,8 +170,9 @@
         const order = ['марафон','акція','фотозвіт_до_свята','профорієнтація','фотозвіт_до_дати','фотозвіт','шоп'];
         for (let cat of order) {
             if (statsData[cat]) {
+                const isActive = highlightedCat === cat ? 'active' : '';
                 const label = cat === 'шоп' ? 'Поліція' : cat.replace(/_/g, ' ');
-                h += `<div class="stat-item" style="border-left-color: var(--clr-${cat})" onclick="window.toggleH('${cat}')">
+                h += `<div class="stat-item ${isActive}" style="border-left-color: var(--clr-${cat})" onclick="window.toggleH('${cat}')">
                     <b style="color: var(--clr-${cat}); text-transform: capitalize;">${label}</b>: ${statsData[cat].count}
                 </div>`;
             }
@@ -202,7 +210,7 @@
             <option value="шоп" ${cat==='шоп'?'selected':''}>Шкільний офіцер поліції</option>
         </select>
         <input type="text" class="ev-name" placeholder="Назва" value="${val.name||''}">
-        <div class="prof-fields" style="display: ${cat === 'профорієнтація' ? 'block' : 'none'};">
+        <div class="prof-fields" style="display: ${cat === 'профорієнтація' ? 'block' : 'none'}; background: #f0f7f1; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent-color); display: flex; flex-direction: column; gap: 8px;">
             <input type="text" class="ev-inst" placeholder="Навчальний заклад" value="${val.inst||''}">
             <input type="number" class="ev-count" placeholder="Кількість учасників" value="${val.count||''}">
         </div>
