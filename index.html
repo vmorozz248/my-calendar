@@ -8,7 +8,7 @@
     :root {
         --bg-main: #f3f7f5; --border-color: #a3c1b2;
         --header-gradient: linear-gradient(135deg, #103a2e, #1a5a4a); 
-        --header-text: #e0f2f1; --accent-color: #2e7d32; --hover-color: #1a5a4a;
+        --header-text: #e0f2f1; --accent-color: #2e7d32;
         --clr-акція: #00897b; --clr-профорієнтація: #2e7d32; --clr-шоп: #0a251e;
         --clr-марафон: #43a047; --clr-фотозвіт_до_свята: #c2185b;
         --clr-фотозвіт_до_дати: #7b1fa2; --clr-фотозвіт: #455a64;
@@ -16,7 +16,7 @@
     
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #103a2e; min-height: 100vh; }
     .header { width: 100%; background: var(--header-gradient); padding: 15px 30px; color: var(--header-text); display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; border-radius: 0 0 15px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); position: relative; z-index: 100; }
-    .header-controls button { background: rgba(255,255,255,0.1); color: var(--header-text); border: 1px solid rgba(255,255,255,0.2); padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 15px; }
+    .header-controls button { background: rgba(255,255,255,0.1); color: var(--header-text); border: 1px solid rgba(255,255,255,0.2); padding: 10px 18px; border-radius: 10px; cursor: pointer; font-weight: bold; }
 
     .main-container { display: flex; flex-direction: row; gap: 20px; padding: 20px; max-width: 1450px; margin: 0 auto; box-sizing: border-box; align-items: flex-start; }
     .calendar-section { flex: 1; background: white; border-radius: 12px; padding: 25px; border: 1px solid var(--border-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -24,7 +24,7 @@
 
     .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); background: white; }
     .week-day { background: #b2dfdb; color: #103a2e; padding: 15px; text-align: center; font-weight: bold; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-    .day { height: 135px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow-y: auto; box-sizing: border-box; }
+    .day { height: 135px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow-y: auto; }
     .day.is-holiday { background: #fff9db !important; }
 
     .day.highlight-акція { background: rgba(0, 137, 123, 0.1) !important; border: 2px solid var(--clr-акція) !important; }
@@ -35,37 +35,31 @@
     .ev-badge { font-size: 11px; padding: 3px 5px; border-radius: 4px; margin-bottom: 3px; color: white; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
     .ev-badge.published::after { content: " ✓"; font-weight: bold; }
 
-    /* ОХАЙНЕ ВЕРТИКАЛЬНЕ ВІКНО */
-    #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.4); z-index: 3000; width: 95%; max-width: 550px; display: none; border: 2px solid var(--border-color); max-height: 90vh; overflow-y: auto; }
+    /* ВІКНО З ВКЛАДКАМИ */
+    #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.4); z-index: 3000; width: 95%; max-width: 500px; display: none; border: 2px solid var(--border-color); }
     
-    .event-block { border: 1px solid var(--border-color); padding: 35px 15px 15px 15px; border-radius: 12px; position: relative; background: #f9fdfd; display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .tabs-container { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #ddd; }
+    .tab-btn { padding: 8px 15px; border-radius: 8px 8px 0 0; border: 1px solid #ddd; background: #f0f0f0; cursor: pointer; font-size: 13px; white-space: nowrap; }
+    .tab-btn.active { background: #103a2e; color: white; border-color: #103a2e; font-weight: bold; }
+    .tab-add { background: #e0f2f1; color: #103a2e; border: 1px dashed #103a2e; font-weight: bold; }
+
+    .event-content { display: none; flex-direction: column; gap: 12px; }
+    .event-content.active { display: flex; }
+
+    .btn-save { background: #103a2e; color: #e0f2f1; border: none; width: 100%; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 15px; }
+    .btn-delete { color: #d93d5c; background: none; border: 1px solid #d93d5c; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; align-self: flex-end; }
     
-    .btn-close { position: absolute; right: 10px; top: 8px; color: #d93d5c; border: none; background: none; cursor: pointer; font-size: 24px; z-index: 10; font-weight: bold; }
-    .btn-save { background: #103a2e; color: #e0f2f1; border: none; width: 100%; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 10px; }
-    
-    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #bbb; border-radius: 10px; box-sizing: border-box; font-size: 15px; color: #333; resize: none; background: white; }
+    input, select, textarea { width: 100%; padding: 12px; border: 1px solid #bbb; border-radius: 10px; box-sizing: border-box; font-size: 15px; resize: none; }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(16,58,46,0.7); display:none; z-index: 2500; backdrop-filter: blur(4px); }
 
-    .stat-item { padding: 10px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 10px; border-left: 6px solid; background: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.08); transition: 0.2s; }
-    .stat-item.active { background: #b2dfdb !important; font-weight: bold; border-color: #103a2e; }
-    
-    .cat-акція { background: var(--clr-акція); border-color: var(--clr-акція); }
-    .cat-марафон { background: var(--clr-марафон); border-color: var(--clr-марафон); }
-    .cat-фотозвіт_до_свята { background: var(--clr-фотозвіт_до_свята); border-color: var(--clr-фотозвіт_до_свята); }
-    .cat-профорієнтація { background: var(--clr-профорієнтація); border-color: var(--clr-профорієнтація); }
-    .cat-фотозвіт_до_дати { background: var(--clr-фотозвіт_до_дати); border-color: var(--clr-фотозвіт_до_дати); }
-    .cat-фотозвіт { background: var(--clr-фотозвіт); border-color: var(--clr-фотозвіт); }
-    .cat-шоп { background: var(--clr-шоп); border-color: var(--clr-шоп); }
+    .stat-item { padding: 10px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 10px; border-left: 6px solid; background: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.08); }
 </style>
 </head>
 <body>
 <div class="overlay" id="overlay" onclick="closeAll()"></div>
 <div class="header">
     <h2 style="margin:0;">Кабінет Валерії 🦝</h2>
-    <div class="header-controls">
-        <button onclick="goToday()">Сьогодні</button>
-        <button onclick="generateReport()">Звіт</button>
-    </div>
+    <div class="header-controls"><button onclick="goToday()">Сьогодні</button><button onclick="generateReport()">Звіт</button></div>
 </div>
 <div class="main-container">
     <div class="calendar-section">
@@ -76,31 +70,18 @@
         </div>
         <div class="days-grid" id="daysGrid"></div>
     </div>
-    <div class="stats-panel">
-        <div style="font-weight:bold; color:#103a2e; margin-bottom:18px; border-bottom:2px solid #a3c1b2; padding-bottom:8px;">📊 Статистика місяця</div>
-        <div id="statsContent"></div>
-    </div>
+    <div class="stats-panel"><div id="statsContent"></div></div>
 </div>
+
 <div id="eventForm">
     <h3 id="selectedDateText" style="text-align:center; color:#103a2e; margin: 0 0 15px 0;"></h3>
-    <div style="text-align:center; margin-bottom:20px; background: #e0f2f1; padding: 10px; border-radius: 10px;">
-        <label style="cursor: pointer; font-weight: bold;"><input type="checkbox" id="isHoliday" style="width:auto; transform: scale(1.2); margin-right: 8px;"> Вихідний / Свято</label>
-    </div>
+    <div style="text-align:center; margin-bottom:15px;"><label><input type="checkbox" id="isHoliday"> Вихідний</label></div>
     
-    <div id="eventList"></div>
+    <div class="tabs-container" id="tabsHeader"></div>
+    <div id="tabsContent"></div>
 
-    <button onclick="addNewEventBlock()" style="width:100%; padding:14px; border-radius:10px; border:2px dashed #103a2e; background:#f0f7f6; cursor:pointer; font-weight:bold; margin-bottom:15px; color: #103a2e;">+ Додати ще один захід</button>
-    <button class="btn-save" onclick="saveAllEvents()">Зберегти всі заходи</button>
-    
-    <div style="text-align: center; margin-top: 15px;">
-        <button onclick="closeAll()" style="background:none; border:none; color:#888; cursor:pointer; text-decoration: underline;">Скасувати та закрити</button>
-    </div>
-</div>
-
-<div id="reportModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.3); z-index: 3000; width: 95%; max-width: 550px; display: none; border: 2px solid var(--border-color);">
-    <h3 style="margin-top:0; color:#103a2e;">Звіт за місяць</h3>
-    <textarea id="reportTextarea" style="height:400px; font-family:monospace; font-size:14px; width:100%; padding:15px; border:1px solid #ccc; border-radius:12px;" readonly></textarea>
-    <button class="btn-save" style="margin-top:20px;" onclick="closeAll()">Закрити вікно</button>
+    <button class="btn-save" onclick="saveAllEvents()">Зберегти все</button>
+    <button onclick="closeAll()" style="width:100%; background:none; border:none; color:#888; margin-top:10px; cursor:pointer; text-decoration:underline;">Скасувати</button>
 </div>
 
 <script type="module">
@@ -110,143 +91,105 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   let d = new Date(), currMonth = d.getMonth(), currYear = d.getFullYear(), events = {}, highlightedCat = null;
-  const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Лютий", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
+  const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
   
   onSnapshot(collection(db, "schoolEvents"), (snapshot) => {
     events = {}; snapshot.forEach(doc => { events[doc.id] = doc.data(); }); render();
   });
 
   window.render = function() {
-    try {
-        const grid = document.getElementById('daysGrid');
-        document.getElementById('monthTitle').innerText = `${months[currMonth]} ${currYear}`;
-        grid.innerHTML = '';
-        ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach(wd => { grid.innerHTML += `<div class="week-day">${wd}</div>`; });
-        let firstDay = new Date(currYear, currMonth, 1).getDay();
-        let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
-        let start = firstDay === 0 ? 6 : firstDay - 1;
-        let statsData = {};
-        for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty"></div>`;
-        for (let i = 1; i <= daysInMo; i++) {
-            const key = `${currYear}-${currMonth}-${i}`, dayDiv = document.createElement('div'), dw = new Date(currYear, currMonth, i).getDay();
-            dayDiv.className = `day ${dw===0 || dw===6 ? 'is-holiday' : ''}`;
-            let html = `<b>${i}</b>`;
-            if (events[key]) {
-                if (events[key].isHoliday) dayDiv.classList.add('is-holiday');
-                let items = events[key].items || [];
-                items.forEach(ev => {
-                    const cat = ev.category || 'фотозвіт';
-                    if (highlightedCat === cat) dayDiv.classList.add(`highlight-${cat}`);
-                    const pubClass = ev.published ? 'published' : '';
-                    html += `<div class="ev-badge cat-${cat} ${pubClass}">${ev.name}</div>`;
-                    if (!statsData[cat]) statsData[cat] = { count: 0 };
-                    statsData[cat].count++;
-                });
-            }
-            dayDiv.innerHTML = html; dayDiv.onclick = () => openForm(i); grid.appendChild(dayDiv);
+    const grid = document.getElementById('daysGrid');
+    document.getElementById('monthTitle').innerText = `${months[currMonth]} ${currYear}`;
+    grid.innerHTML = '';
+    ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach(wd => { grid.innerHTML += `<div class="week-day">${wd}</div>`; });
+    let firstDay = new Date(currYear, currMonth, 1).getDay();
+    let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
+    let start = firstDay === 0 ? 6 : firstDay - 1;
+    let statsData = {};
+    for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty"></div>`;
+    for (let i = 1; i <= daysInMo; i++) {
+        const key = `${currYear}-${currMonth}-${i}`, dayDiv = document.createElement('div'), dw = new Date(currYear, currMonth, i).getDay();
+        dayDiv.className = `day ${dw===0 || dw===6 ? 'is-holiday' : ''}`;
+        let html = `<b>${i}</b>`;
+        if (events[key]) {
+            if (events[key].isHoliday) dayDiv.classList.add('is-holiday');
+            (events[key].items || []).forEach(ev => {
+                const cat = ev.category || 'фотозвіт';
+                if (highlightedCat === cat) dayDiv.classList.add(`highlight-${cat}`);
+                html += `<div class="ev-badge cat-${cat} ${ev.published ? 'published' : ''}">${ev.name}</div>`;
+                if (!statsData[cat]) statsData[cat] = { count: 0 };
+                statsData[cat].count++;
+            });
         }
-        let h = '';
-        const order = ['марафон','акція','фотозвіт_до_свята','профорієнтація','фотозвіт_до_дати','фотозвіт','шоп'];
-        for (let cat of order) {
-            if (statsData[cat]) {
-                const label = cat === 'шоп' ? 'Поліція' : cat.replace(/_/g, ' ');
-                h += `<div class="stat-item ${highlightedCat===cat?'active':''}" style="border-left-color: var(--clr-${cat})" onclick="window.toggleH('${cat}')">
-                    <b style="color: var(--clr-${cat}); text-transform: capitalize;">${label}</b>: ${statsData[cat].count}
-                </div>`;
-            }
-        }
-        document.getElementById('statsContent').innerHTML = h || '<p style="color:#999;font-size:13px;text-align:center;">Подій не знайдено</p>';
-    } catch (e) { console.error(e); }
+        dayDiv.innerHTML = html; dayDiv.onclick = () => openForm(i); grid.appendChild(dayDiv);
+    }
+    let h = '📊 <b>Статистика</b><br><br>';
+    ['марафон','акція','фотозвіт_до_свята','профорієнтація','фотозвіт_до_дати','фотозвіт','шоп'].forEach(cat => {
+        if (statsData[cat]) h += `<div class="stat-item ${highlightedCat===cat?'active':''}" style="border-left-color:var(--clr-${cat})" onclick="window.toggleH('${cat}')">${cat.replace(/_/g,' ')}: ${statsData[cat].count}</div>`;
+    });
+    document.getElementById('statsContent').innerHTML = h;
   };
 
   window.toggleH = (c) => { highlightedCat = highlightedCat === c ? null : c; render(); };
+
   window.openForm = function(day) {
     window.selKey = `${currYear}-${currMonth}-${day}`;
     document.getElementById('selectedDateText').innerText = `${day} ${months[currMonth]}`;
     const data = events[window.selKey] || { items: [], isHoliday: false };
     document.getElementById('isHoliday').checked = data.isHoliday || false;
-    document.getElementById('eventList').innerHTML = '';
-    if (data.items.length === 0) addNewEventBlock(); else data.items.forEach(ev => addNewEventBlock(ev));
+    window.tempItems = data.items.length > 0 ? JSON.parse(JSON.stringify(data.items)) : [{category:'фотозвіт', name:'', cls:'', teacher:'', student:'', det:'', published:false}];
+    renderTabs();
     document.getElementById('eventForm').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
   };
 
-  window.addNewEventBlock = function(val = {}) {
-    const div = document.createElement('div'); div.className = 'event-block';
-    const cat = val.category || 'фотозвіт';
-    const isPub = val.published ? 'checked' : '';
-    div.innerHTML = `<button class="btn-close" onclick="this.parentElement.remove()">✕</button>
-        <select class="ev-cat" onchange="toggleFields(this)">
-            <option value="акція" ${cat==='акція'?'selected':''}>Акція</option>
-            <option value="марафон" ${cat==='марафон'?'selected':''}>Марафон</option>
-            <option value="фотозвіт_до_свята" ${cat==='фотозвіт_до_свята'?'selected':''}>Фотозвіт до свята</option>
-            <option value="фотозвіт" ${cat==='фотозвіт'?'selected':''}>Фотозвіт</option>
-            <option value="профорієнтація" ${cat==='профорієнтація'?'selected':''}>Профорієнтація</option>
-            <option value="фотозвіт_до_дати" ${cat==='фотозвіт_до_дати'?'selected':''}>Фотозвіт до дати</option>
-            <option value="шоп" ${cat==='шоп'?'selected':''}>Шкільний офіцер поліції</option>
-        </select>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; background: #e0f2f1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <input type="checkbox" class="ev-pub" style="width:auto;" ${isPub}> <span><b>Опубліковано роботу</b></span>
-        </div>
-        <input type="text" class="ev-name" placeholder="Назва заходу" value="${val.name||''}">
-        <div class="prof-fields" style="display: ${cat === 'профорієнтація' ? 'flex' : 'none'}; flex-direction: column; gap: 8px; background: #f0f7f6; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent-color);">
-            <input type="text" class="ev-inst" placeholder="Навчальний заклад" value="${val.inst||''}">
-            <input type="number" class="ev-count" placeholder="Кількість учасників" value="${val.count||''}">
-        </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <input type="text" class="ev-cls" placeholder="Клас" value="${val.cls||''}">
-            <input type="text" class="ev-teacher" placeholder="Вчитель" value="${val.teacher||''}">
-        </div>
-        <input type="text" class="ev-student" placeholder="ПІБ учня" value="${val.student||''}">
-        <textarea class="ev-det" placeholder="Додаткові примітки..." rows="3">${val.det||''}</textarea>`;
-    document.getElementById('eventList').appendChild(div);
-  };
+  function renderTabs(activeIdx = 0) {
+    const head = document.getElementById('tabsHeader'), cont = document.getElementById('tabsContent');
+    head.innerHTML = ''; cont.innerHTML = '';
+    window.tempItems.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${idx === activeIdx ? 'active' : ''}`;
+        btn.innerText = `Захід ${idx + 1}`;
+        btn.onclick = () => renderTabs(idx);
+        head.appendChild(btn);
 
-  window.toggleFields = (select) => {
-    const fields = select.parentElement.querySelector('.prof-fields');
-    fields.style.display = select.value === 'профорієнтація' ? 'flex' : 'none';
-  };
+        const div = document.createElement('div');
+        div.className = `event-content ${idx === activeIdx ? 'active' : ''}`;
+        div.innerHTML = `
+            <button class="btn-delete" onclick="deleteTab(${idx})">Видалити цей захід</button>
+            <select onchange="updateTemp(${idx}, 'category', this.value)">
+                <option value="акція" ${item.category==='акція'?'selected':''}>Акція</option>
+                <option value="марафон" ${item.category==='марафон'?'selected':''}>Марафон</option>
+                <option value="фотозвіт" ${item.category==='фотозвіт'?'selected':''}>Фотозвіт</option>
+                <option value="профорієнтація" ${item.category==='профорієнтація'?'selected':''}>Профорієнтація</option>
+                <option value="шоп" ${item.category==='шоп'?'selected':''}>Поліція</option>
+            </select>
+            <label><input type="checkbox" ${item.published?'checked':''} onchange="updateTemp(${idx}, 'published', this.checked)"> Опубліковано</label>
+            <input type="text" placeholder="Назва" value="${item.name}" oninput="updateTemp(${idx}, 'name', this.value)">
+            <input type="text" placeholder="Клас" value="${item.cls}" oninput="updateTemp(${idx}, 'cls', this.value)">
+            <input type="text" placeholder="Вчитель" value="${item.teacher}" oninput="updateTemp(${idx}, 'teacher', this.value)">
+            <textarea placeholder="Примітки" oninput="updateTemp(${idx}, 'det', this.value)">${item.det}</textarea>
+        `;
+        cont.appendChild(div);
+    });
+    const addBtn = document.createElement('button');
+    addBtn.className = 'tab-btn tab-add'; addBtn.innerText = '+ Додати';
+    addBtn.onclick = () => { window.tempItems.push({category:'фотозвіт', name:'', cls:'', teacher:'', student:'', det:'', published:false}); renderTabs(window.tempItems.length-1); };
+    head.appendChild(addBtn);
+  }
+
+  window.updateTemp = (idx, field, val) => { window.tempItems[idx][field] = val; };
+  window.deleteTab = (idx) => { window.tempItems.splice(idx, 1); renderTabs(0); };
 
   window.saveAllEvents = async function() {
-    const blocks = document.querySelectorAll('.event-block');
-    const items = [];
-    blocks.forEach(b => {
-        const name = b.querySelector('.ev-name').value;
-        if (name) items.push({
-            category: b.querySelector('.ev-cat').value,
-            published: b.querySelector('.ev-pub').checked,
-            name: name, cls: b.querySelector('.ev-cls').value,
-            teacher: b.querySelector('.ev-teacher').value,
-            student: b.querySelector('.ev-student').value,
-            det: b.querySelector('.ev-det').value,
-            inst: b.querySelector('.ev-inst')?.value || '',
-            count: b.querySelector('.ev-count')?.value || ''
-        });
-    });
-    await setDoc(doc(db, "schoolEvents", window.selKey), { items, isHoliday: document.getElementById('isHoliday').checked });
+    const finalItems = window.tempItems.filter(i => i.name.trim() !== '');
+    await setDoc(doc(db, "schoolEvents", window.selKey), { items: finalItems, isHoliday: document.getElementById('isHoliday').checked });
     closeAll();
   };
 
-  window.generateReport = function() {
-    let r = `ЗВІТ ЗА МІСЯЦЬ: ${months[currMonth].toUpperCase()} ${currYear}\n\n`;
-    for(let i=1; i<=31; i++){
-        const k = `${currYear}-${currMonth}-${i}`;
-        if(events[k] && events[k].items && events[k].items.length > 0) {
-            r += `${i} ${months[currMonth]}:\n`;
-            events[k].items.forEach(ev => {
-                const tag = ev.category === 'шоп' ? 'ШОП' : ev.category.toUpperCase();
-                const pubStatus = ev.published ? ' [ОПУБЛІКОВАНО ✓]' : ' [НЕ ОПУБЛІКОВАНО]';
-                r += ` - [${tag}] ${ev.name}${pubStatus}\n   Клас: ${ev.cls || '-'}\n`;
-            });
-            r += `--------------------------\n`;
-        }
-    }
-    document.getElementById('reportTextarea').value = r; document.getElementById('reportModal').style.display = 'block'; document.getElementById('overlay').style.display = 'block';
-  };
-
+  window.closeAll = () => { document.getElementById('eventForm').style.display='none'; document.getElementById('overlay').style.display='none'; };
   window.goToday = () => { let n = new Date(); currMonth = n.getMonth(); currYear = n.getFullYear(); render(); };
   window.changeMonth = (s) => { currMonth += s; if(currMonth<0){currMonth=11;currYear--;} if(currMonth>11){currMonth=0;currYear++;} render(); };
-  window.closeAll = () => { document.querySelectorAll('#eventForm, #reportModal, #overlay').forEach(el => el.style.display='none'); };
   render();
 </script>
 </body>
