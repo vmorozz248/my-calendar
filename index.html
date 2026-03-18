@@ -24,10 +24,11 @@
 
     .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); background: white; }
     .week-day { background: #b2dfdb; color: #103a2e; padding: 15px; text-align: center; font-weight: bold; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
-    .day { height: 135px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow-y: auto; }
+    .day { height: 135px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow-y: auto; box-sizing: border-box; }
     .day.is-holiday { background: #fff9db !important; }
 
     .ev-badge { font-size: 11px; padding: 4px 6px; border-radius: 4px; margin-bottom: 3px; color: white !important; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; text-shadow: 0px 1px 2px rgba(0,0,0,0.3); }
+    .ev-badge.published::after { content: " ✓"; font-weight: bold; }
 
     .cat-акція { background-color: var(--clr-акція) !important; }
     .cat-марафон { background-color: var(--clr-марафон) !important; }
@@ -38,7 +39,7 @@
     .cat-шоп { background-color: var(--clr-шоп) !important; }
 
     #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.4); z-index: 3000; width: 95%; max-width: 500px; display: none; border: 2px solid var(--border-color); }
-    .tabs-container { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+    .tabs-container { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 5px; min-height: 40px; }
     .tab-btn { padding: 8px 12px; border-radius: 8px 8px 0 0; border: 1px solid #ddd; background: #f0f0f0; cursor: pointer; font-size: 12px; white-space: nowrap; }
     .tab-btn.active { background: #103a2e; color: white; border-color: #103a2e; font-weight: bold; }
     
@@ -46,15 +47,13 @@
     .event-content.active { display: flex; }
 
     .btn-save { background: #103a2e; color: #e0f2f1; border: none; width: 100%; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 15px; }
-    
-    input, select, textarea { 
-        width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 10px; 
-        box-sizing: border-box; font-size: 14px; resize: none; background: #fff;
-    }
+    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 10px; box-sizing: border-box; font-size: 14px; resize: none; background: #fff; }
     
     .prof-fields { background: #f0f7f6; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent-color); display: flex; flex-direction: column; gap: 8px; }
-    .pub-toggle { display: none; align-items: center; gap: 8px; font-size: 13px; background: #e0f2f1; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
+    .pub-toggle { align-items: center; gap: 8px; font-size: 13px; background: #e0f2f1; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(16,58,46,0.7); display:none; z-index: 2500; backdrop-filter: blur(4px); }
+    .stat-item { padding: 10px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 10px; border-left: 6px solid; background: #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.08); text-transform: capitalize; }
+    .stat-item.active { background: #b2dfdb !important; font-weight: bold; border-color: #103a2e; }
 </style>
 </head>
 <body>
@@ -64,7 +63,14 @@
     <div class="header-controls"><button onclick="goToday()">Сьогодні</button></div>
 </div>
 <div class="main-container">
-    <div class="calendar-section"><div class="days-grid" id="daysGrid"></div></div>
+    <div class="calendar-section">
+        <div style="display:flex; justify-content:center; align-items:center; gap:40px; margin-bottom:25px;">
+            <button onclick="changeMonth(-1)" style="border:none; background:none; font-size:30px; color:#103a2e; cursor:pointer;">❮</button>
+            <div id="monthTitle" style="font-size:26px; font-weight:bold; min-width:200px; text-align:center;"></div>
+            <button onclick="changeMonth(1)" style="border:none; background:none; font-size:30px; color:#103a2e; cursor:pointer;">❯</button>
+        </div>
+        <div class="days-grid" id="daysGrid"></div>
+    </div>
     <div class="stats-panel"><div id="statsContent"></div></div>
 </div>
 
@@ -74,6 +80,7 @@
     <div class="tabs-container" id="tabsHeader"></div>
     <div id="tabsContent"></div>
     <button class="btn-save" onclick="saveAllEvents()">Зберегти всі заходи</button>
+    <button onclick="closeAll()" style="width:100%; background:none; border:none; color:#888; margin-top:10px; cursor:pointer; text-decoration:underline;">Скасувати</button>
 </div>
 
 <script type="module">
@@ -82,7 +89,7 @@
   const firebaseConfig = { apiKey: "AIzaSyAjwzw-TF0zcrfFL6vfcTfGyeCO_UaoHxw", authDomain: "valeria-calendar.firebaseapp.com", projectId: "valeria-calendar", storageBucket: "valeria-calendar.firebasestorage.app", messagingSenderId: "294992605627", appId: "1:294992605627:web:82a06b96a1ebf5b020d49e" };
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  let d = new Date(), currMonth = d.getMonth(), currYear = d.getFullYear(), events = {};
+  let d = new Date(), currMonth = d.getMonth(), currYear = d.getFullYear(), events = {}, highlightedCat = null;
   const months = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
 
   onSnapshot(collection(db, "schoolEvents"), (snapshot) => {
@@ -90,28 +97,42 @@
   });
 
   window.render = function() {
-    const grid = document.getElementById('daysGrid');
-    grid.innerHTML = '';
-    ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach(wd => { grid.innerHTML += `<div class="week-day">${wd}</div>`; });
-    let firstDay = new Date(currYear, currMonth, 1).getDay();
-    let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
-    let start = firstDay === 0 ? 6 : firstDay - 1;
-    for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty"></div>`;
-    for (let i = 1; i <= daysInMo; i++) {
-        const key = `${currYear}-${currMonth}-${i}`, dayDiv = document.createElement('div');
-        dayDiv.className = 'day';
-        let html = `<b>${i}</b>`;
-        if (events[key]) {
-            (events[key].items || []).forEach(ev => {
-                html += `<div class="ev-badge cat-${ev.category}">${ev.name}</div>`;
-            });
+    try {
+        const grid = document.getElementById('daysGrid');
+        document.getElementById('monthTitle').innerText = `${months[currMonth]} ${currYear}`;
+        grid.innerHTML = '';
+        ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].forEach(wd => { grid.innerHTML += `<div class="week-day">${wd}</div>`; });
+        let firstDay = new Date(currYear, currMonth, 1).getDay();
+        let daysInMo = new Date(currYear, currMonth + 1, 0).getDate();
+        let start = firstDay === 0 ? 6 : firstDay - 1;
+        let statsData = {};
+        for(let p=0; p<start; p++) grid.innerHTML += `<div class="day empty"></div>`;
+        for (let i = 1; i <= daysInMo; i++) {
+            const key = `${currYear}-${currMonth}-${i}`, dayDiv = document.createElement('div'), dw = new Date(currYear, currMonth, i).getDay();
+            dayDiv.className = `day ${dw===0 || dw===6 ? 'is-holiday' : ''}`;
+            let html = `<b>${i}</b>`;
+            if (events[key]) {
+                if (events[key].isHoliday) dayDiv.classList.add('is-holiday');
+                (events[key].items || []).forEach(ev => {
+                    const cat = ev.category || 'фотозвіт';
+                    html += `<div class="ev-badge cat-${cat}">${ev.name}</div>`;
+                    if (!statsData[cat]) statsData[cat] = { count: 0 };
+                    statsData[cat].count++;
+                });
+            }
+            dayDiv.innerHTML = html; dayDiv.onclick = () => openForm(i); grid.appendChild(dayDiv);
         }
-        dayDiv.innerHTML = html; dayDiv.onclick = () => openForm(i); grid.appendChild(dayDiv);
-    }
+        let h = '📊 <b>Статистика</b><br><br>';
+        ['марафон','акція','фотозвіт_до_свята','профорієнтація','фотозвіт_до_дати','фотозвіт','шоп'].forEach(cat => {
+            if (statsData[cat]) h += `<div class="stat-item" style="border-left-color:var(--clr-${cat})">${cat.replace(/_/g,' ')}: ${statsData[cat].count}</div>`;
+        });
+        document.getElementById('statsContent').innerHTML = h;
+    } catch(e) { console.error(e); }
   };
 
   window.openForm = function(day) {
     window.selKey = `${currYear}-${currMonth}-${day}`;
+    document.getElementById('selectedDateText').innerText = `${day} ${months[currMonth]}`;
     const data = events[window.selKey] || { items: [], isHoliday: false };
     document.getElementById('isHoliday').checked = data.isHoliday || false;
     window.tempItems = data.items.length > 0 ? JSON.parse(JSON.stringify(data.items)) : [{category:'фотозвіт', name:'', cls:'', teacher:'', student:'', det:'', inst:'', count:'', published:false}];
@@ -130,7 +151,7 @@
         btn.onclick = () => renderTabs(idx);
         head.appendChild(btn);
         
-        const showPub = (item.category === 'акція' || item.category === 'марафон');
+        const isPubCat = (item.category === 'акція' || item.category === 'марафон');
 
         const div = document.createElement('div');
         div.className = `event-content ${idx === activeIdx ? 'active' : ''}`;
@@ -142,7 +163,7 @@
                 <option value="профорієнтація" ${item.category==='профорієнтація'?'selected':''}>Профорієнтація</option>
                 <option value="шоп" ${item.category==='шоп'?'selected':''}>Поліція</option>
             </select>
-            <div class="pub-toggle" style="display: ${showPub ? 'flex' : 'none'};">
+            <div class="pub-toggle" style="display: ${isPubCat ? 'flex' : 'none'};">
                 <input type="checkbox" ${item.published?'checked':''} onchange="updateTemp(${idx}, 'published', this.checked)"> <span>Опубліковано</span>
             </div>
             <input type="text" placeholder="Назва заходу" value="${item.name}" oninput="updateTemp(${idx}, 'name', this.value)">
@@ -156,7 +177,7 @@
             </div>
             <input type="text" placeholder="ПІБ учня" value="${item.student||''}" oninput="updateTemp(${idx}, 'student', this.value)">
             <textarea placeholder="Примітки" rows="3" oninput="updateTemp(${idx}, 'det', this.value)">${item.det}</textarea>
-            <button style="color:red; background:none; border:none; cursor:pointer; font-size:11px; margin-top:5px; text-decoration:underline;" onclick="deleteTab(${idx})">🗑 Видалити</button>
+            <button style="color:red; background:none; border:none; cursor:pointer; font-size:11px; margin-top:5px; text-decoration:underline;" onclick="deleteTab(${idx})">🗑 Видалити цей захід</button>
         `;
         cont.appendChild(div);
     });
@@ -167,13 +188,14 @@
   }
 
   window.updateTemp = (idx, field, val) => { window.tempItems[idx][field] = val; };
-  window.deleteTab = (idx) => { if(confirm('Видалити цей захід?')) { window.tempItems.splice(idx, 1); renderTabs(0); } };
+  window.deleteTab = (idx) => { if(confirm('Видалити?')) { window.tempItems.splice(idx, 1); renderTabs(0); } };
   window.saveAllEvents = async function() {
     await setDoc(doc(db, "schoolEvents", window.selKey), { items: window.tempItems.filter(i => i.name.trim() !== ''), isHoliday: document.getElementById('isHoliday').checked });
     closeAll();
   };
   window.closeAll = () => { document.getElementById('eventForm').style.display='none'; document.getElementById('overlay').style.display='none'; };
-  window.goToday = () => { location.reload(); };
+  window.changeMonth = (s) => { currMonth += s; if(currMonth<0){currMonth=11;currYear--;} if(currMonth>11){currMonth=0;currYear++;} render(); };
+  window.goToday = () => { let n = new Date(); currMonth = n.getMonth(); currYear = n.getFullYear(); render(); };
   render();
 </script>
 </body>
