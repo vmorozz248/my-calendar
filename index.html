@@ -5,23 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Кабінет Валерії 🦝</title>
 <style>
-    /* БЛАГОРОДНА ЗЕЛЕНА ПАЛІТРА */
     :root {
-        --bg-main: #f3f7f5;
-        --border-color: #a3c1b2;
+        --bg-main: #f3f7f5; --border-color: #a3c1b2;
         --header-gradient: linear-gradient(135deg, #103a2e, #1a5a4a); 
-        --header-text: #e0f2f1;
-        --accent-color: #2e7d32;
-        --hover-color: #1a5a4a;
-        
-        /* КОЛЬОРИ ДЛЯ ДІЯЛЬНОСТІ */
-        --clr-акція: #00897b; 
-        --clr-профорієнтація: #2e7d32; 
-        --clr-шоп: #0a251e;
-        --clr-марафон: #43a047; 
-        --clr-фотозвіт_до_свята: #c2185b;
-        --clr-фотозвіт_до_дати: #7b1fa2; 
-        --clr-фотозвіт: #455a64;
+        --header-text: #e0f2f1; --accent-color: #2e7d32; --hover-color: #1a5a4a;
+        --clr-акція: #00897b; --clr-профорієнтація: #2e7d32; --clr-шоп: #0a251e;
+        --clr-марафон: #43a047; --clr-фотозвіт_до_свята: #c2185b;
+        --clr-фотозвіт_до_дати: #7b1fa2; --clr-фотозвіт: #455a64;
     }
     
     body { font-family: 'Segoe UI', sans-serif; background: var(--bg-main); margin: 0; padding: 0; color: #103a2e; min-height: 100vh; }
@@ -38,7 +28,6 @@
     .day { height: 135px; padding: 10px; cursor: pointer; background: #fff; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow-y: auto; box-sizing: border-box; }
     .day.is-holiday { background: #fff9db !important; }
 
-    /* ПІДСВІТКА КЛІТИНОК */
     .day.highlight-акція { background: rgba(0, 137, 123, 0.1) !important; border: 2px solid var(--clr-акція) !important; }
     .day.highlight-профорієнтація { background: rgba(46, 125, 50, 0.1) !important; border: 2px solid var(--clr-профорієнтація) !important; }
     .day.highlight-шоп { background: rgba(10, 37, 30, 0.1) !important; border: 2px solid var(--clr-шоп) !important; }
@@ -47,8 +36,13 @@
     .ev-badge { font-size: 11px; padding: 3px 5px; border-radius: 4px; margin-bottom: 3px; color: white; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
     .ev-badge.published::after { content: " ✓"; font-weight: bold; }
 
-    #eventForm, #reportModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.3); z-index: 3000; width: 95%; max-width: 500px; display: none; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); }
-    .event-block { border: 1px solid #ddd; padding: 25px 15px 15px 15px; border-radius: 12px; margin-bottom: 15px; position: relative; background: #f9fdf9; display: flex; flex-direction: column; gap: 10px; }
+    /* ОНОВЛЕНЕ ВІКНО З ГОРИЗОНТАЛЬНИМ ГОРТАННЯМ */
+    #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.3); z-index: 3000; width: 95%; max-width: 900px; display: none; border: 1px solid var(--border-color); }
+    
+    #eventList { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 15px; scroll-snap-type: x mandatory; }
+    
+    .event-block { flex: 0 0 350px; border: 1px solid #ddd; padding: 25px 15px 15px 15px; border-radius: 12px; position: relative; background: #f9fdf9; display: flex; flex-direction: column; gap: 10px; scroll-snap-align: start; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+    
     .btn-close { position: absolute; right: 10px; top: 8px; color: #d93d5c; border: none; background: none; cursor: pointer; font-size: 22px; z-index: 10; }
     .btn-save { background: #103a2e; color: #e0f2f1; border: none; width: 100%; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 18px; }
     
@@ -89,11 +83,16 @@
 <div id="eventForm">
     <h3 id="selectedDateText" style="text-align:center; color:#103a2e; margin-top:0;"></h3>
     <div style="text-align:center; margin-bottom:15px;"><label style="cursor: pointer;"><input type="checkbox" id="isHoliday" style="width:auto; transform: scale(1.2);"> Вихідний / Свято</label></div>
-    <div id="eventList"></div>
-    <button onclick="addNewEventBlock()" style="width:100%; padding:14px; border-radius:10px; border:1px solid #ccc; background:#f0f0f0; margin-bottom:15px; cursor:pointer; font-weight:bold;">+ Додати захід</button>
-    <button class="btn-save" onclick="saveAllEvents()">Зберегти зміни</button>
+    
+    <div id="eventList"></div> <div style="display: flex; gap: 10px;">
+        <button onclick="addNewEventBlock()" style="flex: 1; padding:14px; border-radius:10px; border:1px solid #ccc; background:#f0f0f0; cursor:pointer; font-weight:bold;">+ Ще один захід</button>
+        <button class="btn-save" style="flex: 2;" onclick="saveAllEvents()">Зберегти всі зміни</button>
+    </div>
+    <div style="text-align: center; margin-top: 10px;">
+        <button onclick="closeAll()" style="background:none; border:none; color:#888; cursor:pointer; text-decoration: underline;">Закрити без збереження</button>
+    </div>
 </div>
-<div id="reportModal">
+<div id="reportModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.3); z-index: 3000; width: 95%; max-width: 500px; display: none; border: 1px solid var(--border-color);">
     <h3 style="margin-top:0; color:#103a2e;">Звіт за місяць</h3>
     <textarea id="reportTextarea" style="height:350px; font-family:monospace; font-size:14px; width:100%; padding:15px; border:1px solid #ccc; border-radius:12px;" readonly></textarea>
     <button class="btn-save" style="margin-top:20px;" onclick="closeAll()">Закрити</button>
@@ -145,13 +144,14 @@
         const order = ['марафон','акція','фотозвіт_до_свята','профорієнтація','фотозвіт_до_дати','фотозвіт','шоп'];
         for (let cat of order) {
             if (statsData[cat]) {
+                const isActive = highlightedCat === cat ? 'active' : '';
                 const label = cat === 'шоп' ? 'Поліція' : cat.replace(/_/g, ' ');
                 h += `<div class="stat-item ${highlightedCat===cat?'active':''}" style="border-left-color: var(--clr-${cat})" onclick="window.toggleH('${cat}')">
                     <b style="color: var(--clr-${cat}); text-transform: capitalize;">${label}</b>: ${statsData[cat].count}
                 </div>`;
             }
         }
-        document.getElementById('statsContent').innerHTML = h || '<p style="color:#999;text-align:center;">Подій не знайдено</p>';
+        document.getElementById('statsContent').innerHTML = h || '<p style="color:#999;font-size:13px;text-align:center;">Подій не знайдено</p>';
     } catch (e) { console.error(e); }
   };
 
