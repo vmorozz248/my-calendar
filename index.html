@@ -37,7 +37,6 @@
     .cat-фотозвіт { background-color: var(--clr-фотозвіт) !important; }
     .cat-шоп { background-color: var(--clr-шоп) !important; }
 
-    /* ФОРМА ТА ФІКСОВАНІ ПОЛЯ */
     #eventForm { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 15px; box-shadow: 0 0 60px rgba(0,0,0,0.4); z-index: 3000; width: 95%; max-width: 500px; display: none; border: 2px solid var(--border-color); }
     .tabs-container { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
     .tab-btn { padding: 8px 12px; border-radius: 8px 8px 0 0; border: 1px solid #ddd; background: #f0f0f0; cursor: pointer; font-size: 12px; white-space: nowrap; }
@@ -48,19 +47,13 @@
 
     .btn-save { background: #103a2e; color: #e0f2f1; border: none; width: 100%; padding: 18px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 15px; }
     
-    /* ВИПРАВЛЕНО РОЗМІРИ ТА ЗАБОРОНЕНО РОЗТЯГУВАННЯ */
     input, select, textarea { 
-        width: 100%; 
-        padding: 10px; 
-        border: 1px solid #bbb; 
-        border-radius: 10px; 
-        box-sizing: border-box; 
-        font-size: 14px; 
-        resize: none; /* ЦЕ ЗАБОРОНЯЄ РОЗТЯГУВАННЯ */
-        background: #fff;
+        width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 10px; 
+        box-sizing: border-box; font-size: 14px; resize: none; background: #fff;
     }
     
     .prof-fields { background: #f0f7f6; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent-color); display: flex; flex-direction: column; gap: 8px; }
+    .pub-toggle { display: none; align-items: center; gap: 8px; font-size: 13px; background: #e0f2f1; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
     .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(16,58,46,0.7); display:none; z-index: 2500; backdrop-filter: blur(4px); }
 </style>
 </head>
@@ -136,6 +129,9 @@
         btn.innerText = `Захід ${idx + 1}`;
         btn.onclick = () => renderTabs(idx);
         head.appendChild(btn);
+        
+        const showPub = (item.category === 'акція' || item.category === 'марафон');
+
         const div = document.createElement('div');
         div.className = `event-content ${idx === activeIdx ? 'active' : ''}`;
         div.innerHTML = `
@@ -146,7 +142,9 @@
                 <option value="профорієнтація" ${item.category==='профорієнтація'?'selected':''}>Профорієнтація</option>
                 <option value="шоп" ${item.category==='шоп'?'selected':''}>Поліція</option>
             </select>
-            <label style="font-size:13px;"><input type="checkbox" ${item.published?'checked':''} onchange="updateTemp(${idx}, 'published', this.checked)"> Опубліковано на сайті/соцмережах</label>
+            <div class="pub-toggle" style="display: ${showPub ? 'flex' : 'none'};">
+                <input type="checkbox" ${item.published?'checked':''} onchange="updateTemp(${idx}, 'published', this.checked)"> <span>Опубліковано</span>
+            </div>
             <input type="text" placeholder="Назва заходу" value="${item.name}" oninput="updateTemp(${idx}, 'name', this.value)">
             <div class="prof-fields" style="display: ${item.category === 'профорієнтація' ? 'flex' : 'none'};">
                 <input type="text" placeholder="Навчальний заклад" value="${item.inst||''}" oninput="updateTemp(${idx}, 'inst', this.value)">
@@ -157,8 +155,8 @@
                 <input type="text" placeholder="Вчитель" value="${item.teacher||''}" oninput="updateTemp(${idx}, 'teacher', this.value)">
             </div>
             <input type="text" placeholder="ПІБ учня" value="${item.student||''}" oninput="updateTemp(${idx}, 'student', this.value)">
-            <textarea placeholder="Примітки (місце проведення, деталі)" rows="3" oninput="updateTemp(${idx}, 'det', this.value)">${item.det}</textarea>
-            <button style="color:red; background:none; border:none; cursor:pointer; font-size:11px; margin-top:5px; text-decoration:underline;" onclick="deleteTab(${idx})">🗑 Видалити цей захід</button>
+            <textarea placeholder="Примітки" rows="3" oninput="updateTemp(${idx}, 'det', this.value)">${item.det}</textarea>
+            <button style="color:red; background:none; border:none; cursor:pointer; font-size:11px; margin-top:5px; text-decoration:underline;" onclick="deleteTab(${idx})">🗑 Видалити</button>
         `;
         cont.appendChild(div);
     });
